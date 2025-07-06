@@ -33,11 +33,225 @@ logger = logging.getLogger(__name__)
 
 # Force stdout to be unbuffered for real-time output
 import os
+import re
+import matplotlib.pyplot as plt
+import pandas as pd
+from typing import List, Dict, Tuple
 os.environ['PYTHONUNBUFFERED'] = '1'
 
 def flush_print(*args, **kwargs):
     """Print with forced flush for immediate output."""
     print(*args, **kwargs, flush=True)
+
+def parse_training_metrics(output_lines: List[str]) -> Dict[str, List[float]]:
+    """Parse training output to extract metrics."""
+    metrics = {
+        'iteration': [],
+        'train_loss': [],
+        'val_loss': [],
+        'learning_rate': [],
+        'tokens_per_sec': [],
+        'peak_memory_gb': []
+    }
+
+    # Regex patterns for different metrics
+    iter_pattern = r'Iter (\d+):'
+    train_loss_pattern = r'Train loss ([\d.]+)'
+    val_loss_pattern = r'Val loss ([\d.]+)'
+    lr_pattern = r'Learning Rate ([\d.e-]+)'
+    tokens_sec_pattern = r'Tokens/sec ([\d.]+)'
+    memory_pattern = r'Peak mem ([\d.]+) GB'
+
+    for line in output_lines:
+        # Look for iteration lines that contain multiple metrics
+        iter_match = re.search(iter_pattern, line)
+        if iter_match:
+            iteration = int(iter_match.group(1))
+
+            # Extract all metrics from this line
+            train_loss_match = re.search(train_loss_pattern, line)
+            val_loss_match = re.search(val_loss_pattern, line)
+            lr_match = re.search(lr_pattern, line)
+            tokens_sec_match = re.search(tokens_sec_pattern, line)
+            memory_match = re.search(memory_pattern, line)
+
+            # Only add if we have at least train or val loss
+            if train_loss_match or val_loss_match:
+                metrics['iteration'].append(iteration)
+                metrics['train_loss'].append(float(train_loss_match.group(1)) if train_loss_match else None)
+                metrics['val_loss'].append(float(val_loss_match.group(1)) if val_loss_match else None)
+                metrics['learning_rate'].append(float(lr_match.group(1)) if lr_match else None)
+                metrics['tokens_per_sec'].append(float(tokens_sec_match.group(1)) if tokens_sec_match else None)
+                metrics['peak_memory_gb'].append(float(memory_match.group(1)) if memory_match else None)
+
+        # Also look for standalone validation loss lines
+        elif 'Val loss' in line and 'Iter' in line:
+            iter_val_match = re.search(r'Iter (\d+): Val loss ([\d.]+)', line)
+            if iter_val_match:
+                iteration = int(iter_val_match.group(1))
+                val_loss = float(iter_val_match.group(2))
+
+                # Check if this iteration already exists
+                if iteration not in metrics['iteration']:
+                    metrics['iteration'].append(iteration)
+                    metrics['train_loss'].append(None)
+                    metrics['val_loss'].append(val_loss)
+                    metrics['learning_rate'].append(None)
+                    metrics['tokens_per_sec'].append(None)
+                    metrics['peak_memory_gb'].append(None)
+                else:
+                    # Update existing entry
+                    idx = metrics['iteration'].index(iteration)
+                    if metrics['val_loss'][idx] is None:
+                        metrics['val_loss'][idx] = val_loss
+
+    return metrics
+
+def create_training_visualization(metrics: Dict[str, List[float]], output_dir: str = "./lora_adapters"):
+    """Create training visualization with loss plots and metrics table."""
+    if not metrics['iteration']:
+        logger.warning("No training metrics found to visualize")
+        return
+
+    # Create DataFrame for easier handling
+    df = pd.DataFrame(metrics)
+    df = df.dropna(subset=['iteration'])  # Remove any rows without iteration
+
+    if df.empty:
+        logger.warning("No valid training data to visualize")
+        return
+
+    # Create figure with subplots
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 10))
+    fig.suptitle('Training Progress Visualization', fontsize=16, fontweight='bold')
+
+    # Plot 1: Training and Validation Loss
+    ax1.set_title('Training & Validation Loss', fontweight='bold')
+
+    # Filter out None values for plotting
+    train_data = df[df['train_loss'].notna()]
+    val_data = df[df['val_loss'].notna()]
+
+    if not train_data.empty:
+        ax1.plot(train_data['iteration'], train_data['train_loss'],
+                'b-o', label='Training Loss', linewidth=2, markersize=6)
+    if not val_data.empty:
+        ax1.plot(val_data['iteration'], val_data['val_loss'],
+                'r-s', label='Validation Loss', linewidth=2, markersize=6)
+
+    ax1.set_xlabel('Iteration')
+    ax1.set_ylabel('Loss')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+
+    # Plot 2: Learning Rate
+    lr_data = df[df['learning_rate'].notna()]
+    if not lr_data.empty:
+        ax2.set_title('Learning Rate', fontweight='bold')
+        ax2.plot(lr_data['iteration'], lr_data['learning_rate'],
+                'g-^', linewidth=2, markersize=6)
+        ax2.set_xlabel('Iteration')
+        ax2.set_ylabel('Learning Rate')
+        ax2.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
+        ax2.grid(True, alpha=0.3)
+    else:
+        ax2.text(0.5, 0.5, 'No Learning Rate Data', ha='center', va='center', transform=ax2.transAxes)
+        ax2.set_title('Learning Rate', fontweight='bold')
+
+    # Plot 3: Tokens per Second
+    tokens_data = df[df['tokens_per_sec'].notna()]
+    if not tokens_data.empty:
+        ax3.set_title('Training Speed (Tokens/sec)', fontweight='bold')
+        ax3.plot(tokens_data['iteration'], tokens_data['tokens_per_sec'],
+                'purple', marker='d', linewidth=2, markersize=6)
+        ax3.set_xlabel('Iteration')
+        ax3.set_ylabel('Tokens/sec')
+        ax3.grid(True, alpha=0.3)
+    else:
+        ax3.text(0.5, 0.5, 'No Speed Data', ha='center', va='center', transform=ax3.transAxes)
+        ax3.set_title('Training Speed (Tokens/sec)', fontweight='bold')
+
+    # Plot 4: Memory Usage
+    memory_data = df[df['peak_memory_gb'].notna()]
+    if not memory_data.empty:
+        ax4.set_title('Peak Memory Usage (GB)', fontweight='bold')
+        ax4.plot(memory_data['iteration'], memory_data['peak_memory_gb'],
+                'orange', marker='h', linewidth=2, markersize=6)
+        ax4.set_xlabel('Iteration')
+        ax4.set_ylabel('Memory (GB)')
+        ax4.grid(True, alpha=0.3)
+    else:
+        ax4.text(0.5, 0.5, 'No Memory Data', ha='center', va='center', transform=ax4.transAxes)
+        ax4.set_title('Peak Memory Usage (GB)', fontweight='bold')
+
+    plt.tight_layout()
+
+    # Save the plot
+    plot_path = Path(output_dir) / "training_progress.png"
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    logger.info(f"📊 Training visualization saved to: {plot_path}")
+
+    # Show the plot
+    plt.show()
+
+    return df
+
+def print_training_summary_table(df: pd.DataFrame):
+    """Print a nice summary table of training metrics."""
+    if df.empty:
+        logger.warning("No data available for summary table")
+        return
+
+    logger.info("\n" + "="*80)
+    logger.info("📈 TRAINING SUMMARY TABLE")
+    logger.info("="*80)
+
+    # Create summary table
+    summary_data = []
+    for _, row in df.iterrows():
+        summary_row = {
+            'Iteration': int(row['iteration']),
+            'Train Loss': f"{row['train_loss']:.3f}" if pd.notna(row['train_loss']) else "N/A",
+            'Val Loss': f"{row['val_loss']:.3f}" if pd.notna(row['val_loss']) else "N/A",
+            'Learning Rate': f"{row['learning_rate']:.2e}" if pd.notna(row['learning_rate']) else "N/A",
+            'Tokens/sec': f"{row['tokens_per_sec']:.1f}" if pd.notna(row['tokens_per_sec']) else "N/A",
+            'Memory (GB)': f"{row['peak_memory_gb']:.2f}" if pd.notna(row['peak_memory_gb']) else "N/A"
+        }
+        summary_data.append(summary_row)
+
+    # Print table header
+    headers = ['Iteration', 'Train Loss', 'Val Loss', 'Learning Rate', 'Tokens/sec', 'Memory (GB)']
+    col_widths = [10, 12, 12, 15, 12, 12]
+
+    # Print header
+    header_line = "| " + " | ".join(f"{h:^{w}}" for h, w in zip(headers, col_widths)) + " |"
+    separator_line = "|" + "|".join("-" * (w + 2) for w in col_widths) + "|"
+
+    logger.info(header_line)
+    logger.info(separator_line)
+
+    # Print data rows
+    for row in summary_data:
+        data_line = "| " + " | ".join(f"{str(row[h]):^{w}}" for h, w in zip(headers, col_widths)) + " |"
+        logger.info(data_line)
+
+    logger.info(separator_line)
+
+    # Print summary statistics
+    train_losses = df['train_loss'].dropna()
+    val_losses = df['val_loss'].dropna()
+
+    logger.info("\n📊 TRAINING STATISTICS:")
+    if not train_losses.empty:
+        logger.info(f"   Training Loss:   Initial: {train_losses.iloc[0]:.3f} → Final: {train_losses.iloc[-1]:.3f} (Δ: {train_losses.iloc[-1] - train_losses.iloc[0]:+.3f})")
+    if not val_losses.empty:
+        logger.info(f"   Validation Loss: Initial: {val_losses.iloc[0]:.3f} → Final: {val_losses.iloc[-1]:.3f} (Δ: {val_losses.iloc[-1] - val_losses.iloc[0]:+.3f})")
+
+    if not train_losses.empty and not val_losses.empty:
+        final_gap = abs(train_losses.iloc[-1] - val_losses.iloc[-1])
+        logger.info(f"   Final Loss Gap:  {final_gap:.3f} ({'Overfitting' if train_losses.iloc[-1] < val_losses.iloc[-1] else 'Underfitting' if final_gap > 0.5 else 'Good fit'})")
+
+    logger.info("="*80)
 
 class PostgresQueryDataset:
     """Dataset class for loading and processing the tsquery training data."""
@@ -301,6 +515,20 @@ def train_model_with_mlx_lm(
         if return_code == 0:
             logger.info("=" * 60)
             logger.info("Training completed successfully!")
+
+            # Parse training metrics and create visualization
+            logger.info("📊 Creating training visualization...")
+            metrics = parse_training_metrics(output_lines)
+
+            if metrics['iteration']:
+                # Create and display visualization
+                df = create_training_visualization(metrics, output_dir)
+                if df is not None and not df.empty:
+                    print_training_summary_table(df)
+                else:
+                    logger.warning("No training data available for visualization")
+            else:
+                logger.warning("No training metrics found in output")
         else:
             logger.error(f"Training failed with return code {return_code}")
             if return_code is not None:

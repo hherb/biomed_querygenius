@@ -8,7 +8,7 @@ wheels/
 
 # Virtual environments
 .venv
-.environments
+.env
 
 #our models
 models/
