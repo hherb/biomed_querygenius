@@ -19,16 +19,25 @@ import argparse
 import mlx.core as mx
 from mlx_lm import load, generate
 
-# Configure logging
+# Configure logging with forced flushing
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('phi3_training.log'),
-        logging.StreamHandler()
-    ]
+        logging.StreamHandler(sys.stdout)  # Explicitly use stdout
+    ],
+    force=True  # Force reconfiguration if already configured
 )
 logger = logging.getLogger(__name__)
+
+# Force stdout to be unbuffered for real-time output
+import os
+os.environ['PYTHONUNBUFFERED'] = '1'
+
+def flush_print(*args, **kwargs):
+    """Print with forced flush for immediate output."""
+    print(*args, **kwargs, flush=True)
 
 class PostgresQueryDataset:
     """Dataset class for loading and processing the tsquery training data."""
@@ -251,20 +260,56 @@ def train_model_with_mlx_lm(
     logger.info(f"Learning rate: {learning_rate}")
     logger.info(f"Batch size: {batch_size}")
     logger.info(f"LoRA layers: {num_layers}")
+    flush_print("\n🚀 Training starting... Progress will be shown below:")
+    flush_print("=" * 80)
     
     try:
-        # Run the training command
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        logger.info("Training completed successfully!")
-        logger.info(f"Training output:\n{result.stdout}")
-        
-        if result.stderr:
-            logger.warning(f"Training warnings:\n{result.stderr}")
-            
+        # Run the training command with real-time output
+        logger.info("Starting training process...")
+        logger.info("=" * 60)
+
+        # Use Popen for real-time output streaming
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,  # Merge stderr into stdout
+            text=True,
+            bufsize=1,  # Line buffered
+            universal_newlines=True
+        )
+
+        # Stream output in real-time
+        output_lines = []
+        if process.stdout:
+            while True:
+                output = process.stdout.readline()
+                if output == '' and process.poll() is not None:
+                    break
+                if output:
+                    # Print directly to console for immediate feedback
+                    line = output.strip()
+                    flush_print(line)
+                    output_lines.append(line)
+
+                    # Log important progress indicators
+                    if any(keyword in line.lower() for keyword in ['iter:', 'loss:', 'eval:', 'saving']):
+                        logger.info(line)
+
+        # Wait for process to complete and get return code
+        return_code = process.poll()
+
+        if return_code == 0:
+            logger.info("=" * 60)
+            logger.info("Training completed successfully!")
+        else:
+            logger.error(f"Training failed with return code {return_code}")
+            if return_code is not None:
+                raise subprocess.CalledProcessError(return_code, cmd)
+            else:
+                raise RuntimeError("Training process failed with unknown return code")
+
     except subprocess.CalledProcessError as e:
         logger.error(f"Training failed with return code {e.returncode}")
-        logger.error(f"Error output:\n{e.stderr}")
-        logger.error(f"Standard output:\n{e.stdout}")
         raise
     except FileNotFoundError:
         logger.error("MLX-LM not found. Make sure it's installed: pip install mlx-lm")
