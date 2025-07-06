@@ -1,5 +1,5 @@
 def main():
-    print("Hello from pg-fulltext!")
+    print("Read the README.md file for instructions on how to use this project.")
 
 
 if __name__ == "__main__":
