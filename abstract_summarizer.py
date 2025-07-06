@@ -200,7 +200,7 @@ class AbstractSummarizer:
             text_to_summarize = f"{title}\n\n{abstract}"
             
             # Create prompt for the AI model
-            prompt = f"Summarize the following text in 3 sentences or less, capturing the essential message:\n\n<text>\n{text_to_summarize}\n</text>"
+            prompt = f"Summarize the following text in 3 sentences or less, capturing the essential message. Be direct and concise without filler phrases like 'This study shows' or 'The text discusses'. Focus on the key findings and facts:\n\n<text>\n{text_to_summarize}\n</text>"
             
             # Call Ollama API
             response = ollama.chat(
