@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.environments
+
+#our models
+models/
+lora_adapters/
+adapters/
+ollama_deployment.log
+phi3_training.log
+postgres_training_data.json
+
+#log files
+*.log
+
+deepseek_data.txt
+
+~
+synthetic_data/deepseek_json_20250706_6b3f42 (1).json
+synthetic_data/deepseek_json_20250706_6b3f42.json
+synthetic_data/synthetic_med_queries_gpt4o.jsonl

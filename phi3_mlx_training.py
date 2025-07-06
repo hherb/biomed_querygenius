@@ -1,0 +1,555 @@
+#!/usr/bin/env python3
+"""
+Phi-3-mini Fine-tuning Pipeline for PostgreSQL tsquery Generation
+Optimized for Apple Silicon using MLX-LM
+
+This script fine-tunes Phi-3-mini to convert natural language medical queries
+into PostgreSQL full-text search expressions using the MLX-LM library.
+"""
+
+import json
+import logging
+import time
+import subprocess
+import sys
+from pathlib import Path
+from typing import List, Dict
+import argparse
+
+import mlx.core as mx
+from mlx_lm import load, generate
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('phi3_training.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+class PostgresQueryDataset:
+    """Dataset class for loading and processing the tsquery training data."""
+    
+    def __init__(self, json_file: str):
+        self.data = self._load_and_process_data(json_file)
+        
+    def _load_and_process_data(self, json_file: str) -> List[Dict]:
+        """Load and process the training data into the format expected by MLX-LM."""
+        with open(json_file, 'r', encoding='utf-8') as f:
+            raw_data = json.load(f)
+        
+        processed_data = []
+        for item in raw_data:
+            # Create instruction-following format
+            prompt = self._create_prompt(item['input'])
+            completion = item['output']
+            
+            # Create the chat format expected by MLX-LM
+            processed_data.append({
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a medical database search expert. Convert natural language medical queries into PostgreSQL full-text search expressions using tsquery syntax.\n\nRules:\n- Use & for AND operations\n- Use | for OR operations\n- Use quotes for exact phrases\n- Favor broader terms to avoid false negatives\n- Don't include subset terms (e.g., use 'thoracotomy' not 'emergency thoracotomy')\n- Let PostgreSQL stemming handle plurals"
+                    },
+                    {
+                        "role": "user", 
+                        "content": f"Convert this medical query to a PostgreSQL tsquery expression:\n{item['input']}"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": completion
+                    }
+                ]
+            })
+        
+        logger.info(f"Processed {len(processed_data)} training examples")
+        return processed_data
+    
+    def _create_prompt(self, query: str) -> str:
+        """Create a structured prompt for the model."""
+        return f"""<|system|>
+You are a medical database search expert. Convert natural language medical queries into PostgreSQL full-text search expressions using tsquery syntax.
+
+Rules:
+- Use & for AND operations
+- Use | for OR operations  
+- Use quotes for exact phrases
+- Favor broader terms to avoid false negatives
+- Don't include subset terms (e.g., use 'thoracotomy' not 'emergency thoracotomy')
+- Let PostgreSQL stemming handle plurals
+
+<|user|>
+Convert this medical query to a PostgreSQL tsquery expression:
+{query}
+
+<|assistant|>
+"""
+
+    def save_to_jsonl(self, output_file: str):
+        """Save the dataset in JSONL format for MLX-LM."""
+        with open(output_file, 'w', encoding='utf-8') as f:
+            for item in self.data:
+                f.write(json.dumps(item) + '\n')
+        logger.info(f"Dataset saved to {output_file}")
+
+def prepare_dataset(jsonl_file: str = None, json_file: str = None, output_dir: str = "./data"):
+    """Prepare the dataset for MLX-LM training from JSONL or JSON input."""
+    Path(output_dir).mkdir(exist_ok=True)
+    
+    # Determine input file
+    if jsonl_file:
+        logger.info(f"Loading data from JSONL file: {jsonl_file}")
+        raw_data = load_jsonl_data(jsonl_file)
+    elif json_file:
+        logger.info(f"Loading data from JSON file: {json_file}")
+        raw_data = load_json_data(json_file)
+    else:
+        # Try default locations
+        default_jsonl = "./human_verified_training_data/training_data.jsonl"
+        default_json = "postgres_training_data.json"
+        
+        if Path(default_jsonl).exists():
+            logger.info(f"Using default JSONL file: {default_jsonl}")
+            raw_data = load_jsonl_data(default_jsonl)
+        elif Path(default_json).exists():
+            logger.info(f"Using default JSON file: {default_json}")
+            raw_data = load_json_data(default_json)
+        else:
+            raise FileNotFoundError(f"No training data found. Please provide --data-file or place data in {default_jsonl} or {default_json}")
+    
+    # Process data into MLX-LM format
+    processed_data = []
+    for item in raw_data:
+        # Handle both JSONL (prompt/completion) and JSON (input/output) formats
+        if 'prompt' in item and 'completion' in item:
+            # JSONL format
+            natural_query = extract_query_from_prompt(item['prompt'])
+            tsquery = item['completion']
+        elif 'input' in item and 'output' in item:
+            # JSON format  
+            natural_query = item['input']
+            tsquery = item['output']
+        else:
+            logger.warning(f"Skipping item with unknown format: {list(item.keys())}")
+            continue
+            
+        # Create MLX-LM training format
+        processed_data.append({
+            "prompt": f"Convert this medical query to a PostgreSQL tsquery expression:\n{natural_query}",
+            "completion": tsquery
+        })
+    
+    # Split dataset (80/20 train/val)
+    split_idx = int(0.8 * len(processed_data))
+    train_data = processed_data[:split_idx]
+    val_data = processed_data[split_idx:]
+    
+    # Save splits
+    train_file = f"{output_dir}/train.jsonl"
+    val_file = f"{output_dir}/valid.jsonl"
+    
+    with open(train_file, 'w', encoding='utf-8') as f:
+        for item in train_data:
+            f.write(json.dumps(item) + '\n')
+    
+    with open(val_file, 'w', encoding='utf-8') as f:
+        for item in val_data:
+            f.write(json.dumps(item) + '\n')
+    
+    logger.info(f"Training data: {len(train_data)} examples -> {train_file}")
+    logger.info(f"Validation data: {len(val_data)} examples -> {val_file}")
+    
+    return train_file, val_file
+
+def load_jsonl_data(jsonl_file: str) -> list:
+    """Load data from JSONL file with prompt/completion format."""
+    data = []
+    with open(jsonl_file, 'r', encoding='utf-8') as f:
+        for line_num, line in enumerate(f, 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+                data.append(item)
+            except json.JSONDecodeError as e:
+                logger.warning(f"Line {line_num}: Invalid JSON - {e}")
+                continue
+    
+    logger.info(f"Loaded {len(data)} examples from {jsonl_file}")
+    return data
+
+def load_json_data(json_file: str) -> list:
+    """Load data from JSON file with input/output format."""
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    logger.info(f"Loaded {len(data)} examples from {json_file}")
+    return data
+
+def extract_query_from_prompt(prompt: str) -> str:
+    """Extract the natural language query from a training prompt."""
+    # Look for the pattern after the instruction
+    query_start = prompt.find("Convert this medical query to a PostgreSQL tsquery expression:\n")
+    if query_start != -1:
+        query_start += len("Convert this medical query to a PostgreSQL tsquery expression:\n")
+        # Extract everything after this point, removing any trailing assistant tokens
+        query = prompt[query_start:].strip()
+        
+        # Remove common trailing tokens
+        for token in ["<|assistant|>", "<|end|>", "<|endoftext|>"]:
+            if query.endswith(token):
+                query = query[:-len(token)].strip()
+        
+        return query
+    else:
+        # Fallback: assume the whole prompt is the query
+        return prompt.strip()
+
+def train_model_with_mlx_lm(
+    model_path: str = "microsoft/Phi-3-mini-4k-instruct",
+    train_file: str = "./data/train.jsonl",
+    val_file: str = "./data/valid.jsonl",
+    output_dir: str = "./lora_adapters",
+    num_iters: int = 1000,
+    learning_rate: float = 1e-5,
+    batch_size: int = 4,
+    num_layers: int = 16,
+):
+    """Train the model using MLX-LM command line interface."""
+
+    # MLX-LM expects a directory containing train.jsonl, valid.jsonl, test.jsonl
+    # Extract the directory from the train_file path
+    data_dir = str(Path(train_file).parent)
+
+    # Prepare the command - using correct MLX-LM syntax
+    cmd = [
+        sys.executable, "-m", "mlx_lm", "lora",
+        "--model", model_path,
+        "--train",
+        "--data", data_dir,  # Pass directory, not file
+        "--iters", str(num_iters),
+        "--learning-rate", str(learning_rate),
+        "--batch-size", str(batch_size),
+        "--num-layers", str(num_layers),
+        "--adapter-path", output_dir,
+        "--fine-tune-type", "lora",
+        "--steps-per-report", "10",
+        "--steps-per-eval", "100",
+        "--save-every", "200",
+    ]
+    
+    logger.info("Starting training with MLX-LM...")
+    logger.info(f"Command: {' '.join(cmd)}")
+    logger.info(f"Model: {model_path}")
+    logger.info(f"Training file: {train_file}")
+    logger.info(f"Output directory: {output_dir}")
+    logger.info(f"Training iterations: {num_iters}")
+    logger.info(f"Learning rate: {learning_rate}")
+    logger.info(f"Batch size: {batch_size}")
+    logger.info(f"LoRA layers: {num_layers}")
+    
+    try:
+        # Run the training command
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        logger.info("Training completed successfully!")
+        logger.info(f"Training output:\n{result.stdout}")
+        
+        if result.stderr:
+            logger.warning(f"Training warnings:\n{result.stderr}")
+            
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Training failed with return code {e.returncode}")
+        logger.error(f"Error output:\n{e.stderr}")
+        logger.error(f"Standard output:\n{e.stdout}")
+        raise
+    except FileNotFoundError:
+        logger.error("MLX-LM not found. Make sure it's installed: pip install mlx-lm")
+        raise
+    
+    return output_dir
+
+class Phi3QueryGenerator:
+    """Inference class for generating PostgreSQL queries with the fine-tuned model."""
+    
+    def __init__(self, model_path: str = "microsoft/Phi-3-mini-4k-instruct", adapter_path: str = "./lora_adapters"):
+        """
+        Initialize the query generator.
+        
+        Args:
+            model_path: Path to the base model
+            adapter_path: Path to the LoRA adapters
+        """
+        self.model_path = model_path
+        self.adapter_path = adapter_path
+        self.model = None
+        self.tokenizer = None
+        self._load_model()
+    
+    def _load_model(self):
+        """Load the model with LoRA adapters."""
+        logger.info(f"Loading model from {self.model_path}")
+        
+        if Path(self.adapter_path).exists():
+            logger.info(f"Loading LoRA adapters from {self.adapter_path}")
+            # Load model with adapters
+            self.model, self.tokenizer = load(
+                self.model_path,
+                adapter_path=self.adapter_path
+            )
+        else:
+            logger.info("No LoRA adapters found, loading base model only")
+            # Load base model only
+            self.model, self.tokenizer = load(self.model_path)
+        
+        logger.info("Model loaded successfully!")
+    
+    def _create_prompt(self, query: str) -> str:
+        """Create a structured prompt for the model."""
+        return f"""<|system|>
+You are a medical database search expert. Convert natural language medical queries into PostgreSQL full-text search expressions using tsquery syntax.
+
+Rules:
+- Use & for AND operations
+- Use | for OR operations  
+- Use quotes for exact phrases
+- Favor broader terms to avoid false negatives
+- Don't include subset terms (e.g., use 'thoracotomy' not 'emergency thoracotomy')
+- Let PostgreSQL stemming handle plurals
+
+<|user|>
+Convert this medical query to a PostgreSQL tsquery expression:
+{query}
+
+<|assistant|>
+"""
+    
+    def generate_query(self, input_text: str, max_tokens: int = 100, temperature: float = 0.1) -> str:
+        """
+        Generate a PostgreSQL tsquery expression from natural language.
+        
+        Args:
+            input_text: Natural language medical query
+            max_tokens: Maximum tokens to generate
+            temperature: Sampling temperature (lower = more deterministic)
+            
+        Returns:
+            Generated tsquery expression
+        """
+        prompt = self._create_prompt(input_text)
+        
+        # Generate response (MLX-LM returns only the generated part)
+        try:
+            response = generate(
+                self.model,
+                self.tokenizer,
+                prompt=prompt,
+                max_tokens=max_tokens
+            )
+        except Exception as e:
+            logger.error(f"Generation failed: {e}")
+            return f"Error: {e}"
+        
+        # MLX-LM returns just the generated part, no need to remove prompt
+        generated_text = response.strip()
+        
+        # Clean up the response (remove special tokens and extra text)
+        # Remove <|end|> and other special tokens
+        generated_text = generated_text.replace('<|end|>', '').replace('<|endoftext|>', '')
+        
+        # If it starts with "tsquery", remove that prefix
+        if generated_text.startswith('tsquery '):
+            generated_text = generated_text[8:]  # Remove "tsquery "
+        
+        # Take only the first line if there are multiple lines
+        lines = generated_text.split('\n')
+        if lines:
+            result = lines[0].strip()
+        else:
+            result = generated_text.strip()
+        
+        return result
+    
+    def batch_generate(self, queries: list, **kwargs) -> list:
+        """Generate tsquery expressions for multiple queries."""
+        results = []
+        for query in queries:
+            result = self.generate_query(query, **kwargs)
+            results.append(result)
+        return results
+
+def test_model(adapter_path: str = "./lora_adapters", model_path: str = "microsoft/Phi-3-mini-4k-instruct"):
+    """Test the trained model with sample queries."""
+    logger.info("Testing the trained model...")
+    
+    # Initialize generator
+    generator = Phi3QueryGenerator(model_path, adapter_path)
+    
+    # Test queries
+    test_queries = [
+        "What is the sensitivity of troponin for myocardial infarction?",
+        "What are the contraindications for lumbar puncture?",
+        "What is the treatment for septic shock?",
+        "What are the risk factors for pulmonary embolism?",
+        "What is the Glasgow Coma Scale scoring system?",
+    ]
+    
+    logger.info("Sample generations:")
+    logger.info("=" * 80)
+    
+    for i, query in enumerate(test_queries, 1):
+        logger.info(f"\nTest {i}:")
+        logger.info(f"Input:  {query}")
+        
+        # Generate tsquery
+        try:
+            generated_query = generator.generate_query(query)
+            logger.info(f"Output: {generated_query}")
+            
+            # Basic validation
+            if any(char in generated_query for char in ['&', '|']):
+                logger.info("✓ Contains logical operators")
+            else:
+                logger.info("⚠ No logical operators detected")
+                
+        except Exception as e:
+            logger.error(f"✗ Generation failed: {e}")
+        
+        logger.info("-" * 60)
+
+def check_mlx_lm_installation():
+    """Check if MLX-LM is properly installed and has the lora module."""
+    try:
+        result = subprocess.run([sys.executable, "-m", "mlx_lm", "lora", "--help"], 
+                              capture_output=True, text=True, timeout=10)
+        if result.returncode == 0:
+            logger.info("MLX-LM LoRA training module is available")
+            return True
+        else:
+            logger.error("MLX-LM LoRA module not working properly")
+            return False
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        logger.error("MLX-LM LoRA module not found")
+        logger.info("Try: pip install --upgrade mlx-lm")
+        return False
+
+def main():
+    parser = argparse.ArgumentParser(description="Fine-tune Phi-3-mini for PostgreSQL query generation")
+    parser.add_argument("--data-file", type=str, help="Path to training data file (JSONL or JSON format)")
+    parser.add_argument("--data-dir", type=str, default="./human_verified_training_data", help="Directory containing training data")
+    parser.add_argument("--model_path", type=str, default="microsoft/Phi-3-mini-4k-instruct", help="Path to base model")
+    parser.add_argument("--num_iters", type=int, default=1000, help="Number of training iterations")
+    parser.add_argument("--batch_size", type=int, default=4, help="Batch size")
+    parser.add_argument("--learning_rate", type=float, default=1e-5, help="Learning rate")
+    parser.add_argument("--num_layers", type=int, default=16, help="Number of LoRA layers")
+    parser.add_argument("--output_dir", type=str, default="./lora_adapters", help="Output directory for LoRA adapters")
+    parser.add_argument("--test_only", action="store_true", help="Only run testing (skip training)")
+    parser.add_argument("--prepare_only", action="store_true", help="Only prepare dataset (skip training)")
+    parser.add_argument("--check_install", action="store_true", help="Check MLX-LM installation")
+    
+    args = parser.parse_args()
+    
+    try:
+        if args.check_install:
+            # Check MLX-LM installation
+            check_mlx_lm_installation()
+            return
+        
+        if args.prepare_only:
+            # Only prepare dataset
+            logger.info("Preparing dataset only...")
+            
+            # Determine input file
+            if args.data_file:
+                input_file = args.data_file
+            else:
+                # Look in data directory for default files
+                data_dir = Path(args.data_dir)
+                if not data_dir.exists():
+                    logger.info(f"Creating data directory: {data_dir}")
+                    data_dir.mkdir(parents=True, exist_ok=True)
+                    
+                jsonl_candidates = list(data_dir.glob("*.jsonl"))
+                json_candidates = list(data_dir.glob("*.json"))
+                
+                if jsonl_candidates:
+                    input_file = str(jsonl_candidates[0])
+                    logger.info(f"Found JSONL file: {input_file}")
+                elif json_candidates:
+                    input_file = str(json_candidates[0])
+                    logger.info(f"Found JSON file: {input_file}")
+                else:
+                    input_file = None
+                    logger.warning(f"No training data found in {data_dir}")
+                    logger.info("Please:")
+                    logger.info(f"1. Place your JSONL file in {data_dir}/")
+                    logger.info(f"2. Or specify --data-file path/to/your/data.jsonl")
+                    logger.info(f"3. Or run: bash setup_jsonl_workflow.sh")
+                    return
+            
+            if input_file and input_file.endswith('.jsonl'):
+                train_file, val_file = prepare_dataset(jsonl_file=input_file)
+            elif input_file and input_file.endswith('.json'):
+                train_file, val_file = prepare_dataset(json_file=input_file)
+            else:
+                train_file, val_file = prepare_dataset()  # Use defaults
+                
+            logger.info("Dataset preparation completed!")
+            logger.info(f"Next step: python {__file__} --data-file {input_file if input_file else 'your_data_file'}")
+            return
+        
+        if args.test_only:
+            # Only run testing
+            test_model(args.output_dir, args.model_path)
+            return
+        
+        # Check MLX-LM installation first
+        if not check_mlx_lm_installation():
+            logger.error("Please fix MLX-LM installation before training")
+            return
+        
+        # Prepare dataset
+        logger.info("Preparing dataset...")
+        
+        # Determine input file
+        if args.data_file:
+            input_file = args.data_file
+            if input_file.endswith('.jsonl'):
+                train_file, val_file = prepare_dataset(jsonl_file=input_file)
+            elif input_file.endswith('.json'):
+                train_file, val_file = prepare_dataset(json_file=input_file)
+            else:
+                logger.error(f"Unsupported file format: {input_file}. Use .jsonl or .json")
+                return
+        else:
+            # Use default discovery
+            train_file, val_file = prepare_dataset()
+        
+        # Train model
+        logger.info("Starting training...")
+        output_dir = train_model_with_mlx_lm(
+            model_path=args.model_path,
+            train_file=train_file,
+            val_file=val_file,
+            output_dir=args.output_dir,
+            num_iters=args.num_iters,
+            batch_size=args.batch_size,
+            learning_rate=args.learning_rate,
+            num_layers=args.num_layers,
+        )
+        
+        # Test the trained model
+        logger.info("Testing trained model...")
+        test_model(output_dir, args.model_path)
+        
+        logger.info("Training and testing completed successfully!")
+        
+    except Exception as e:
+        logger.error(f"Training failed: {e}")
+        raise
+
+if __name__ == "__main__":
+    main()
