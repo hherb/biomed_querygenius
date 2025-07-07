@@ -13,7 +13,7 @@ from typing import List, Dict, Optional
 import psycopg2
 from psycopg2 import sql, Error
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, date
 import ollama
 
 # Load environment variables
@@ -137,32 +137,40 @@ class AbstractSummarizer:
             self.connection.close()
         logger.info("Database connection closed")
     
-    def get_abstracts_for_summary(self, limit: int = 100) -> List[Dict[str, str]]:
+    def get_abstracts_for_summary(self, limit: int = 100, from_date: Optional[date] = None, to_date: Optional[date] = None) -> List[Dict[str, str]]:
         """
-        Retrieve documents from 2025 with abstracts between 100-500 characters.
-        
+        Retrieve documents within a specified date range with abstracts between 100-500 characters.
+
         Args:
             limit (int): Maximum number of documents to retrieve (default: 100)
-            
+            from_date (Optional[date]): Start date for the range (default: None, uses 2025-01-01)
+            to_date (Optional[date]): End date for the range (default: None, uses current date)
+
         Returns:
             list: List of dictionaries containing title, abstract, and publication_date
         """
         try:
-            # Query to get 2025 documents with abstracts in the right length range
+            # Set default date range if not provided
+            if from_date is None:
+                from_date = date(2025, 1, 1)
+            if to_date is None:
+                to_date = date.today()
+
+            # Query to get documents within the specified date range with abstracts in the right length range
             query = """
-                SELECT title, abstract, publication_date 
-                FROM document 
-                WHERE EXTRACT(YEAR FROM publication_date) = 2025
-                AND publication_date < CURRENT_DATE
+                SELECT title, abstract, publication_date
+                FROM document
+                WHERE publication_date >= %s
+                AND publication_date <= %s
                 AND LENGTH(abstract) BETWEEN 100 AND 500
                 AND abstract IS NOT NULL
                 AND abstract != ''
-                ORDER BY publication_date DESC 
+                ORDER BY publication_date DESC
                 LIMIT %s
             """
-            
-            logger.info(f"Executing query to retrieve {limit} documents with abstracts 100-500 chars...")
-            self.cursor.execute(query, (limit,))
+
+            logger.info(f"Executing query to retrieve {limit} documents from {from_date} to {to_date} with abstracts 100-500 chars...")
+            self.cursor.execute(query, (from_date, to_date, limit))
             
             # Fetch results
             results = self.cursor.fetchall()
@@ -177,23 +185,24 @@ class AbstractSummarizer:
                     'publication_date': pub_date.strftime('%Y-%m-%d') if pub_date else ''
                 })
             
-            logger.info(f"Successfully retrieved {len(documents)} documents for summarization")
+            logger.info(f"Successfully retrieved {len(documents)} documents from {from_date} to {to_date} for summarization")
             return documents
             
         except Error as e:
             logger.error(f"Error retrieving documents: {e}")
             raise
     
-    def generate_summary(self, title: str, abstract: str) -> Optional[Dict[str, str]]:
+    def generate_summary(self, title: str, abstract: str, output_format: str = "phi3") -> Optional[Dict[str, str]]:
         """
         Generate a summary for the given title and abstract.
-        
+
         Args:
             title (str): Document title
             abstract (str): Document abstract
-            
+            output_format (str): Output format - "phi3" for MLX format or "prompt_completion" for legacy format
+
         Returns:
-            dict: Summary in format {"prompt": prompt_text, "completion": summary} or None if failed
+            dict: Summary in specified format or None if failed
         """
         try:
             # Create the text to summarize (title + abstract)
@@ -215,11 +224,21 @@ class AbstractSummarizer:
             
             # Extract the response content
             summary = response['message']['content'].strip()
-            
-            return {
-                'prompt': prompt,
-                'completion': summary
-            }
+
+            if output_format == "phi3":
+                # Format for phi3 MLX training
+                # Extract the original text from the prompt for the user message
+                text_to_summarize = f"{title}\n\n{abstract}"
+                phi3_text = f"<|user|>\nSummarize the following text in 3 sentences or less, capturing the essential message: <text>{text_to_summarize}</text> <|end|>\n<|assistant|> \n{summary} <|end|>"
+                return {
+                    'text': phi3_text
+                }
+            else:
+                # Legacy prompt/completion format
+                return {
+                    'prompt': prompt,
+                    'completion': summary
+                }
                 
         except Exception as e:
             logger.error(f"Error generating summary: {e}")
@@ -276,14 +295,15 @@ class AbstractSummarizer:
             logger.error(f"Error getting document statistics: {e}")
             raise
     
-    def generate_summary_jsonl(self, documents: List[Dict[str, str]], output_filename: Optional[str] = None) -> str:
+    def generate_summary_jsonl(self, documents: List[Dict[str, str]], output_filename: Optional[str] = None, output_format: str = "phi3") -> str:
         """
         Generate summaries for all documents and save to JSONL file.
-        
+
         Args:
             documents (list): List of document dictionaries
             output_filename (str, optional): Output JSONL filename (default: auto-generated)
-            
+            output_format (str): Output format - "phi3" for MLX format or "prompt_completion" for legacy format
+
         Returns:
             str: Path to the generated JSONL file
         """
@@ -300,7 +320,7 @@ class AbstractSummarizer:
                     logger.info(f"Processing document {i}/{len(documents)}: {doc['title'][:60]}...")
                     
                     # Generate summary for this document
-                    summary_data = self.generate_summary(doc['title'], doc['abstract'])
+                    summary_data = self.generate_summary(doc['title'], doc['abstract'], output_format)
                     
                     if summary_data:
                         # Write summary to JSONL file
@@ -336,9 +356,42 @@ def main():
     parser.add_argument('--output-jsonl', type=str, help='Output JSONL file for summaries')
     parser.add_argument('--stats-only', action='store_true', help='Show only database statistics')
     parser.add_argument('--model', type=str, default='mistral-small3.2', help='Ollama model to use (default: mistral-small3.2)')
+    parser.add_argument('--from-date', type=str, help='Start date for document retrieval (YYYY-MM-DD format, default: 2025-01-01)')
+    parser.add_argument('--to-date', type=str, help='End date for document retrieval (YYYY-MM-DD format, default: today)')
+    parser.add_argument('--format', type=str, choices=['phi3', 'prompt_completion'], default='phi3',
+                       help='Output format: phi3 for MLX training or prompt_completion for legacy format (default: phi3)')
     
     args = parser.parse_args()
-    
+
+    # Parse date arguments
+    from_date = None
+    to_date = None
+
+    if args.from_date:
+        try:
+            from_date = datetime.strptime(args.from_date, '%Y-%m-%d').date()
+        except ValueError:
+            logger.error(f"Invalid from-date format: {args.from_date}. Use YYYY-MM-DD format.")
+            return
+
+    if args.to_date:
+        try:
+            to_date = datetime.strptime(args.to_date, '%Y-%m-%d').date()
+        except ValueError:
+            logger.error(f"Invalid to-date format: {args.to_date}. Use YYYY-MM-DD format.")
+            return
+
+    # Validate date range
+    if from_date and to_date and from_date > to_date:
+        logger.error("from-date cannot be later than to-date")
+        return
+
+    # Log the date range being used
+    if from_date or to_date:
+        effective_from = from_date if from_date else date(2025, 1, 1)
+        effective_to = to_date if to_date else date.today()
+        logger.info(f"Using date range: {effective_from} to {effective_to}")
+
     summarizer = AbstractSummarizer(model_name=args.model)
     
     try:
@@ -361,7 +414,7 @@ def main():
             return
         
         # Retrieve abstracts
-        documents = summarizer.get_abstracts_for_summary(limit=args.limit)
+        documents = summarizer.get_abstracts_for_summary(limit=args.limit, from_date=from_date, to_date=to_date)
         
         if not documents:
             logger.warning("No documents retrieved!")
@@ -376,9 +429,13 @@ def main():
         logger.info(f"\nStarting summary generation for {len(documents)} documents...")
         logger.info(f"Using model: {args.model}")
         
-        jsonl_file = summarizer.generate_summary_jsonl(documents, args.output_jsonl)
+        jsonl_file = summarizer.generate_summary_jsonl(documents, args.output_jsonl, args.format)
         logger.info(f"\nSummaries saved to: {jsonl_file}")
-        logger.info("Ready for fine-tuning with MLX!")
+        logger.info(f"Format: {args.format}")
+        if args.format == "phi3":
+            logger.info("Ready for phi3 MLX training!")
+        else:
+            logger.info("Ready for fine-tuning (legacy format)!")
         
     except Exception as e:
         logger.error(f"Script execution failed: {e}")

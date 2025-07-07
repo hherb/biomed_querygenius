@@ -32,6 +32,65 @@ python phi3_mlx_training.py
 python phi3_mlx_training.py --test_only
 ```
 
+## Data Generation
+
+### Generating Training Data from Database
+
+If you have a PostgreSQL database with medical abstracts, you can generate training data automatically:
+
+#### Q&A Pair Generation
+```bash
+# Generate Q&A pairs in phi3 format (default)
+python abstract_qa.py --limit 100 --output-jsonl qa_training_data.jsonl
+
+# Generate Q&A pairs in legacy format
+python abstract_qa.py --format prompt_completion --limit 100 --output-jsonl qa_legacy.jsonl
+
+# Generate from specific date range
+python abstract_qa.py --from-date 2025-01-01 --to-date 2025-06-30 --limit 200
+```
+
+#### Summary Generation
+```bash
+# Generate summaries in phi3 format (default)
+python abstract_summarizer.py --limit 100 --output-jsonl summary_training_data.jsonl
+
+# Generate summaries in legacy format
+python abstract_summarizer.py --format prompt_completion --limit 100 --output-jsonl summary_legacy.jsonl
+
+# Only process abstracts between 100-500 characters
+python abstract_summarizer.py --limit 50 --model mistral-small3.2
+```
+
+#### Database Requirements
+- PostgreSQL database with a `document` table
+- Required columns: `title`, `abstract`, `publication_date`
+- Environment variables: `POSTGRES_HOST`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+
+## Data Format Conversion
+
+### Converting to Phi3 MLX Format
+
+If you have existing JSONL files in prompt/completion format and need to convert them to phi3 MLX format:
+
+```bash
+# Preview the conversion
+python scripts/convert2phi3mlxformat.py your_data.jsonl --preview
+
+# Convert the file
+python scripts/convert2phi3mlxformat.py your_data.jsonl your_data_phi3.jsonl
+```
+
+The script converts from:
+```json
+{"prompt": "Convert this medical query...", "completion": "answer"}
+```
+
+To phi3 MLX format:
+```json
+{"text": "<|user|>\nquery <|end|>\n<|assistant|> \nanswer <|end|>"}
+```
+
 ## Advanced Training Options
 
 ### Custom Training Parameters

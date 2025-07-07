@@ -126,6 +126,23 @@ The training data uses a prompt-completion format in JSONL:
 }
 ```
 
+### Converting to Phi3 MLX Format
+
+If you need to convert existing JSONL files to the phi3 MLX format (required for MLX training), use the conversion script:
+
+```bash
+# Preview conversion
+python scripts/convert2phi3mlxformat.py input.jsonl --preview
+
+# Convert to phi3 format
+python scripts/convert2phi3mlxformat.py input.jsonl output_phi3.jsonl
+```
+
+This converts from the prompt/completion format to phi3's chat template format:
+```json
+{"text": "<|user|>\nEffect of aspirin on cardiovascular mortality <|end|>\n<|assistant|> \naspirin & cardiovascular & mortality <|end|>"}
+```
+
 ### Medical Query Examples
 
 | Natural Language | Generated tsquery |
@@ -205,6 +222,22 @@ print(result)  # Output: troponin & sensitivity & (MI | "myocardial infarction")
 
 ## 🛠️ Development Tools
 
+### Data Generation Scripts
+
+Generate training data from your PostgreSQL database:
+
+```bash
+# Generate Q&A pairs from abstracts (phi3 format by default)
+python abstract_qa.py --limit 50 --output-jsonl qa_data.jsonl
+
+# Generate summaries from abstracts (phi3 format by default)
+python abstract_summarizer.py --limit 50 --output-jsonl summary_data.jsonl
+
+# Use legacy prompt/completion format
+python abstract_qa.py --format prompt_completion --output-jsonl qa_legacy.jsonl
+python abstract_summarizer.py --format prompt_completion --output-jsonl summary_legacy.jsonl
+```
+
 ### Data Conversion Scripts
 
 ```bash
@@ -212,6 +245,9 @@ print(result)  # Output: troponin & sensitivity & (MI | "myocardial infarction")
 python scripts/text_to_jsonl.py input.txt output.jsonl
 python scripts/jsonl_to_text.py input.jsonl output.txt
 python scripts/convert_data.py
+
+# Convert existing prompt/completion format to phi3 MLX format
+python scripts/convert2phi3mlxformat.py input.jsonl output_phi3.jsonl
 ```
 
 ### JSONL Workflow Setup

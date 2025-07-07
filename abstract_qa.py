@@ -13,7 +13,7 @@ from typing import List, Dict, Optional
 import psycopg2
 from psycopg2 import sql, Error
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, date
 import ollama
 
 # Load environment variables
@@ -140,29 +140,37 @@ class AbstractQARetriever:
             self.connection.close()
         logger.info("Database connection closed")
     
-    def get_2025_abstracts(self, limit: int = 100) -> List[Dict[str, str]]:
+    def get_2025_abstracts(self, limit: int = 100, from_date: Optional[date] = None, to_date: Optional[date] = None) -> List[Dict[str, str]]:
         """
-        Retrieve the newest documents from 2025 with publication dates prior to today.
+        Retrieve documents within a specified date range.
 
         Args:
             limit (int): Maximum number of documents to retrieve (default: 100)
+            from_date (Optional[date]): Start date for the range (default: None, uses 2025-01-01)
+            to_date (Optional[date]): End date for the range (default: None, uses current date)
 
         Returns:
             list: List of dictionaries containing title, abstract, and publication_date
         """
         try:
-            # Query to get the newest 2025 documents with dates prior to today
+            # Set default date range if not provided
+            if from_date is None:
+                from_date = date(2025, 1, 1)
+            if to_date is None:
+                to_date = date.today()
+
+            # Query to get documents within the specified date range
             query = """
                 SELECT title, abstract, publication_date
                 FROM document
-                WHERE EXTRACT(YEAR FROM publication_date) = 2025
-                AND publication_date < CURRENT_DATE
+                WHERE publication_date >= %s
+                AND publication_date <= %s
                 ORDER BY publication_date DESC
                 LIMIT %s
             """
-            
-            logger.info(f"Executing query to retrieve {limit} newest 2025 documents (excluding future dates)...")
-            self.cursor.execute(query, (limit,))
+
+            logger.info(f"Executing query to retrieve {limit} documents from {from_date} to {to_date}...")
+            self.cursor.execute(query, (from_date, to_date, limit))
             
             # Fetch results
             results = self.cursor.fetchall()
@@ -177,7 +185,7 @@ class AbstractQARetriever:
                     'publication_date': pub_date.strftime('%Y-%m-%d') if pub_date else ''
                 })
             
-            logger.info(f"Successfully retrieved {len(documents)} documents from 2025")
+            logger.info(f"Successfully retrieved {len(documents)} documents from {from_date} to {to_date}")
             return documents
             
         except Error as e:
@@ -231,16 +239,17 @@ class AbstractQARetriever:
             logger.error(f"Error getting document statistics: {e}")
             raise
 
-    def extract_qa_pairs(self, title: str, abstract: str) -> List[Dict[str, str]]:
+    def extract_qa_pairs(self, title: str, abstract: str, output_format: str = "phi3") -> List[Dict[str, str]]:
         """
         Extract 2-3 meaningful Q&A pairs from a title and abstract using AI.
 
         Args:
             title (str): Document title
             abstract (str): Document abstract
+            output_format (str): Output format - "phi3" for MLX format or "prompt_completion" for legacy format
 
         Returns:
-            list: List of Q&A pairs in format [{"prompt": question, "completion": answer}, ...]
+            list: List of Q&A pairs in specified format
         """
         try:
             # Create prompt for the AI model
@@ -294,10 +303,18 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
                     qa_pairs = []
                     for item in qa_data:
                         if 'question' in item and 'answer' in item:
-                            qa_pairs.append({
-                                'prompt': item['question'],
-                                'completion': item['answer']
-                            })
+                            if output_format == "phi3":
+                                # Format for phi3 MLX training
+                                phi3_text = f"<|user|>\n{item['question']} <|end|>\n<|assistant|> \n{item['answer']} <|end|>"
+                                qa_pairs.append({
+                                    'text': phi3_text
+                                })
+                            else:
+                                # Legacy prompt/completion format
+                                qa_pairs.append({
+                                    'prompt': item['question'],
+                                    'completion': item['answer']
+                                })
 
                     return qa_pairs
                 else:
@@ -345,13 +362,14 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
             logger.error(f"Error saving abstracts to file: {e}")
             raise
 
-    def generate_qa_jsonl(self, documents: List[Dict[str, str]], output_filename: Optional[str] = None) -> str:
+    def generate_qa_jsonl(self, documents: List[Dict[str, str]], output_filename: Optional[str] = None, output_format: str = "phi3") -> str:
         """
         Generate Q&A pairs for all documents and save to JSONL file.
 
         Args:
             documents (list): List of document dictionaries
             output_filename (str, optional): Output JSONL filename (default: auto-generated)
+            output_format (str): Output format - "phi3" for MLX format or "prompt_completion" for legacy format
 
         Returns:
             str: Path to the generated JSONL file
@@ -369,7 +387,7 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
                     logger.info(f"Processing document {i}/{len(documents)}: {doc['title'][:60]}...")
 
                     # Extract Q&A pairs for this document
-                    qa_pairs = self.extract_qa_pairs(doc['title'], doc['abstract'])
+                    qa_pairs = self.extract_qa_pairs(doc['title'], doc['abstract'], output_format)
 
                     if qa_pairs:
                         # Write each Q&A pair to JSONL file
@@ -409,8 +427,41 @@ def main():
     parser.add_argument('--stats-only', action='store_true', help='Show only database statistics')
     parser.add_argument('--model', type=str, default='mistral-small3.2', help='Ollama model to use (default: mistral-small3.2)')
     parser.add_argument('--abstracts-only', action='store_true', help='Only save abstracts, skip Q&A generation')
+    parser.add_argument('--from-date', type=str, help='Start date for document retrieval (YYYY-MM-DD format, default: 2025-01-01)')
+    parser.add_argument('--to-date', type=str, help='End date for document retrieval (YYYY-MM-DD format, default: today)')
+    parser.add_argument('--format', type=str, choices=['phi3', 'prompt_completion'], default='phi3',
+                       help='Output format: phi3 for MLX training or prompt_completion for legacy format (default: phi3)')
     
     args = parser.parse_args()
+
+    # Parse date arguments
+    from_date = None
+    to_date = None
+
+    if args.from_date:
+        try:
+            from_date = datetime.strptime(args.from_date, '%Y-%m-%d').date()
+        except ValueError:
+            logger.error(f"Invalid from-date format: {args.from_date}. Use YYYY-MM-DD format.")
+            return
+
+    if args.to_date:
+        try:
+            to_date = datetime.strptime(args.to_date, '%Y-%m-%d').date()
+        except ValueError:
+            logger.error(f"Invalid to-date format: {args.to_date}. Use YYYY-MM-DD format.")
+            return
+
+    # Validate date range
+    if from_date and to_date and from_date > to_date:
+        logger.error("from-date cannot be later than to-date")
+        return
+
+    # Log the date range being used
+    if from_date or to_date:
+        effective_from = from_date if from_date else date(2025, 1, 1)
+        effective_to = to_date if to_date else date.today()
+        logger.info(f"Using date range: {effective_from} to {effective_to}")
 
     retriever = AbstractQARetriever(model_name=args.model)
     
@@ -437,7 +488,7 @@ def main():
             return
         
         # Retrieve abstracts
-        documents = retriever.get_2025_abstracts(limit=args.limit)
+        documents = retriever.get_2025_abstracts(limit=args.limit, from_date=from_date, to_date=to_date)
         
         if not documents:
             logger.warning("No documents retrieved!")
@@ -457,9 +508,13 @@ def main():
             logger.info(f"\nStarting Q&A generation for {len(documents)} documents...")
             logger.info(f"Using model: {args.model}")
 
-            jsonl_file = retriever.generate_qa_jsonl(documents, args.output_jsonl)
+            jsonl_file = retriever.generate_qa_jsonl(documents, args.output_jsonl, args.format)
             logger.info(f"\nQ&A pairs saved to: {jsonl_file}")
-            logger.info("Ready for fine-tuning with MLX!")
+            logger.info(f"Format: {args.format}")
+            if args.format == "phi3":
+                logger.info("Ready for phi3 MLX training!")
+            else:
+                logger.info("Ready for fine-tuning (legacy format)!")
         else:
             logger.info(f"\nAbstracts-only mode: Skipping Q&A generation")
             logger.info(f"Retrieved {len(documents)} abstracts")
