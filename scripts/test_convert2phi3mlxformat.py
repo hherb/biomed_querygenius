@@ -52,10 +52,10 @@ class TestConvert2Phi3MLXFormat(unittest.TestCase):
         """Test conversion to phi3 MLX format."""
         prompt = "Convert this medical query to a PostgreSQL tsquery expression:\nTest query"
         completion = "test & query"
-        
+
         result = convert_to_phi3_format(prompt, completion)
-        expected = "<|user|>\nTest query <|end|>\n<|assistant|> \ntest & query <|end|>"
-        
+        expected = "<|user|>\nConvert this medical query to a PostgreSQL tsquery expression:\nTest query <|end|>\n<|assistant|> \ntest & query <|end|>"
+
         self.assertEqual(result, expected)
 
     def test_convert_to_phi3_format_edge_cases(self):
@@ -64,14 +64,14 @@ class TestConvert2Phi3MLXFormat(unittest.TestCase):
         prompt1 = "Convert this medical query to a PostgreSQL tsquery expression:\n"
         completion1 = "empty & query"
         result1 = convert_to_phi3_format(prompt1, completion1)
-        expected1 = "<|user|>\n <|end|>\n<|assistant|> \nempty & query <|end|>"
+        expected1 = "<|user|>\nConvert this medical query to a PostgreSQL tsquery expression:\n <|end|>\n<|assistant|> \nempty & query <|end|>"
         self.assertEqual(result1, expected1)
-        
+
         # Empty completion
         prompt2 = "Convert this medical query to a PostgreSQL tsquery expression:\nSome query"
         completion2 = ""
         result2 = convert_to_phi3_format(prompt2, completion2)
-        expected2 = "<|user|>\nSome query <|end|>\n<|assistant|> \n <|end|>"
+        expected2 = "<|user|>\nConvert this medical query to a PostgreSQL tsquery expression:\nSome query <|end|>\n<|assistant|> \n <|end|>"
         self.assertEqual(result2, expected2)
 
     def test_convert_jsonl_file(self):
@@ -108,14 +108,14 @@ class TestConvert2Phi3MLXFormat(unittest.TestCase):
             # Check first conversion
             first_item = json.loads(lines[0])
             self.assertIn("text", first_item)
-            self.assertIn("<|user|>\nTest 1 <|end|>", first_item["text"])
+            self.assertIn("<|user|>\nConvert this medical query to a PostgreSQL tsquery expression:\nTest 1 <|end|>", first_item["text"])
             self.assertIn("<|assistant|> \ntest1 <|end|>", first_item["text"])
-            
+
             # Check second conversion
             second_item = json.loads(lines[1])
-            self.assertIn("<|user|>\nTest 2 <|end|>", second_item["text"])
-            
-            # Check third conversion (no prefix to remove)
+            self.assertIn("<|user|>\nConvert this query to a PostgreSQL tsquery expression:\nTest 2 <|end|>", second_item["text"])
+
+            # Check third conversion (no prefix to remove, full prompt preserved)
             third_item = json.loads(lines[2])
             self.assertIn("<|user|>\nTest 3 <|end|>", third_item["text"])
             

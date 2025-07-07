@@ -13,19 +13,19 @@ def show_qa_formats():
     print("Q&A Format Comparison")
     print("=" * 50)
     
-    # Sample Q&A data
-    question = "What are the side effects of aspirin?"
-    answer = "Common side effects include stomach irritation, bleeding risk, and allergic reactions."
-    
-    # Phi3 MLX format
+    # Sample data (PostgreSQL query conversion format)
+    prompt = "Convert this medical query to a PostgreSQL tsquery expression:\nWhat are the side effects of aspirin?"
+    completion = "aspirin & (\"side effects\" | adverse | reactions)"
+
+    # Phi3 MLX format (preserves full instruction)
     phi3_format = {
-        "text": f"<|user|>\n{question} <|end|>\n<|assistant|> \n{answer} <|end|>"
+        "text": f"<|user|>\n{prompt} <|end|>\n<|assistant|> \n{completion} <|end|>"
     }
-    
+
     # Legacy format
     legacy_format = {
-        "prompt": question,
-        "completion": answer
+        "prompt": prompt,
+        "completion": completion
     }
     
     print("\n📱 Phi3 MLX Format (for MLX training):")

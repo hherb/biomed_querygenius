@@ -314,10 +314,8 @@ Rules for tsquery composition:
 When asked who you are, respond with "I am a medical database search expert. I convert natural language medical queries into PostgreSQL full-text search expressions using tsquery syntax."
 When you don't know an answer, say "I don't know"
 
-<|user|>
 {query}
 
-<|assistant|>
 """
 
     def save_to_jsonl(self, output_file: str):
@@ -355,24 +353,27 @@ def prepare_dataset(jsonl_file: str = None, json_file: str = None, output_dir: s
     # Process data into MLX-LM format
     processed_data = []
     for item in raw_data:
-        # Handle both JSONL (prompt/completion) and JSON (input/output) formats
-        if 'prompt' in item and 'completion' in item:
-            # JSONL format
+        # Handle multiple formats: phi3 text format, prompt/completion format, and input/output format
+        if 'text' in item:
+            # Phi3 format with full conversation in 'text' key - use directly
+            processed_data.append(item)
+        elif 'prompt' in item and 'completion' in item:
+            # JSONL format - convert to phi3 format
             natural_query = extract_query_from_prompt(item['prompt'])
             tsquery = item['completion']
+            # Create phi3 format
+            phi3_text = f"<|user|>\nConvert this medical query to a PostgreSQL tsquery expression:\n{natural_query} <|end|>\n<|assistant|> \n{tsquery} <|end|>"
+            processed_data.append({"text": phi3_text})
         elif 'input' in item and 'output' in item:
-            # JSON format  
+            # JSON format - convert to phi3 format
             natural_query = item['input']
             tsquery = item['output']
+            # Create phi3 format
+            phi3_text = f"<|user|>\nConvert this medical query to a PostgreSQL tsquery expression:\n{natural_query} <|end|>\n<|assistant|> \n{tsquery} <|end|>"
+            processed_data.append({"text": phi3_text})
         else:
             logger.warning(f"Skipping item with unknown format: {list(item.keys())}")
             continue
-            
-        # Create MLX-LM training format
-        processed_data.append({
-            "prompt": f"Convert this medical query to a PostgreSQL tsquery expression:\n{natural_query}",
-            "completion": tsquery
-        })
     
     # Split dataset (80/20 train/val)
     split_idx = int(0.8 * len(processed_data))
@@ -430,16 +431,55 @@ def extract_query_from_prompt(prompt: str) -> str:
         query_start += len("Convert this medical query to a PostgreSQL tsquery expression:\n")
         # Extract everything after this point, removing any trailing assistant tokens
         query = prompt[query_start:].strip()
-        
+
         # Remove common trailing tokens
         for token in ["<|assistant|>", "<|end|>", "<|endoftext|>"]:
             if query.endswith(token):
                 query = query[:-len(token)].strip()
-        
+
         return query
     else:
         # Fallback: assume the whole prompt is the query
         return prompt.strip()
+
+def extract_query_and_response_from_text(text: str) -> tuple:
+    """Extract natural language query and tsquery response from phi3 text format."""
+    try:
+        # Split by user and assistant sections
+        if '<|user|>' in text and '<|assistant|>' in text:
+            # Extract user part
+            user_start = text.find('<|user|>')
+            user_end = text.find('<|end|>', user_start)
+            if user_start == -1 or user_end == -1:
+                return None, None
+
+            user_content = text[user_start + len('<|user|>'):user_end].strip()
+
+            # Extract the actual query from the user content
+            if 'Convert this medical query to a PostgreSQL tsquery expression:' in user_content:
+                query_start = user_content.find('Convert this medical query to a PostgreSQL tsquery expression:')
+                query_start += len('Convert this medical query to a PostgreSQL tsquery expression:')
+                natural_query = user_content[query_start:].strip()
+            elif 'Summarize the following text' in user_content:
+                # Skip summarization tasks for now
+                return None, None
+            else:
+                natural_query = user_content.strip()
+
+            # Extract assistant part
+            assistant_start = text.find('<|assistant|>')
+            assistant_end = text.find('<|end|>', assistant_start)
+            if assistant_start == -1 or assistant_end == -1:
+                return None, None
+
+            assistant_content = text[assistant_start + len('<|assistant|>'):assistant_end].strip()
+
+            return natural_query, assistant_content
+        else:
+            return None, None
+    except Exception as e:
+        logger.warning(f"Error parsing text format: {e}")
+        return None, None
 
 def train_model_with_mlx_lm(
     model_path: str = "microsoft/Phi-3-mini-4k-instruct",

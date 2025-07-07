@@ -304,7 +304,7 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
                     for item in qa_data:
                         if 'question' in item and 'answer' in item:
                             if output_format == "phi3":
-                                # Format for phi3 MLX training
+                                # Format for phi3 MLX training - include the instruction for consistency
                                 phi3_text = f"<|user|>\n{item['question']} <|end|>\n<|assistant|> \n{item['answer']} <|end|>"
                                 qa_pairs.append({
                                     'text': phi3_text

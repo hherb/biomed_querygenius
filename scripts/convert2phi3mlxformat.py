@@ -50,20 +50,18 @@ def extract_query_from_prompt(prompt: str) -> str:
 def convert_to_phi3_format(prompt: str, completion: str) -> str:
     """
     Convert prompt/completion pair to phi3 MLX chat format.
-    
+
     Args:
-        prompt: The original prompt
+        prompt: The original prompt (full instruction + query)
         completion: The completion text
-        
+
     Returns:
         Formatted text string for phi3 MLX training
     """
-    # Extract the actual query from the prompt
-    query = extract_query_from_prompt(prompt)
-    
+    # Use the full prompt as the user message (preserving the instruction)
     # Format according to phi3 chat template
-    formatted_text = f"<|user|>\n{query} <|end|>\n<|assistant|> \n{completion} <|end|>"
-    
+    formatted_text = f"<|user|>\n{prompt} <|end|>\n<|assistant|> \n{completion} <|end|>"
+
     return formatted_text
 
 
