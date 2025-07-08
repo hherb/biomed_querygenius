@@ -161,7 +161,7 @@ class AbstractQARetriever:
 
             # Query to get documents within the specified date range
             query = """
-                SELECT title, abstract, publication_date
+                SELECT title, abstract, publication_date, doi, external_id
                 FROM document
                 WHERE publication_date >= %s
                 AND publication_date <= %s
@@ -178,11 +178,13 @@ class AbstractQARetriever:
             # Convert to list of dictionaries
             documents = []
             for row in results:
-                title, abstract, pub_date = row
+                title, abstract, pub_date, doi, external_id = row
                 documents.append({
                     'title': title if title else '',
                     'abstract': abstract if abstract else '',
-                    'publication_date': pub_date.strftime('%Y-%m-%d') if pub_date else ''
+                    'publication_date': pub_date.strftime('%Y-%m-%d') if pub_date else '',
+                    'doi': doi if doi else '',
+                    'external_id': external_id if external_id else ''
                 })
             
             logger.info(f"Successfully retrieved {len(documents)} documents from {from_date} to {to_date}")
@@ -239,7 +241,7 @@ class AbstractQARetriever:
             logger.error(f"Error getting document statistics: {e}")
             raise
 
-    def extract_qa_pairs(self, title: str, abstract: str, output_format: str = "phi3") -> List[Dict[str, str]]:
+    def extract_qa_pairs(self, title: str, abstract: str, doi: str = "", external_id: str = "", output_format: str = "phi3") -> List[Dict[str, str]]:
         """
         Extract 2-3 meaningful Q&A pairs from a title and abstract using AI.
 
@@ -255,13 +257,21 @@ class AbstractQARetriever:
             # Create prompt for the AI model
             prompt = f"""You are a medical expert helping to create training data for doctors.
 
-Given the following medical research paper title and abstract, extract 2-3 meaningful question-answer pairs that would be most valuable for a practicing physician to understand from this research.
+Given the following medical research paper title and abstract, extract 2-3 meaningful question-answer pairs 
+that would be most valuable for a practicing physician to understand from this research.
 
 Focus on:
 - Clinical implications and practical applications
-- Key findings and their significance
+- Key findings and their significance for clinical practice
 - Treatment recommendations or diagnostic insights
 - Patient care considerations
+
+IMPORTANT: The extracted question and answer have to be meaningful without having read the abstract
+nor having access to it. The question / answer pair has to be understandable to a doctor without any extra context.
+A bad question would be "What are the key findings in this study" because it needs the context
+A good question would be "What effect has <drug X> on overall mortality in primary prevention?"
+A bad answer would be "The study/authors suggest that ..." 
+A good answer would be "In primary prevention, overall mortality was reduced by 20% in patients receiving <drug X> copared to placebo"."
 
 Title: {title}
 
@@ -269,8 +279,8 @@ Abstract: {abstract}
 
 Please provide exactly 2-3 question-answer pairs in the following JSON format:
 [
-  {{"question": "What is the main clinical finding?", "answer": "The main finding is..."}},
-  {{"question": "How does this impact patient care?", "answer": "This impacts patient care by..."}}
+  {{"question": ... , "answer": ..."}},
+  ...
 ]
 
 Ensure questions are specific and answers are concise but informative (2-3 sentences max per answer)."""
@@ -308,6 +318,13 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
                                 phi3_text = f"<|user|>\n{item['question']} <|end|>\n<|assistant|> \n{item['answer']} <|end|>"
                                 qa_pairs.append({
                                     'text': phi3_text
+                                })
+                            elif output_format == "qas":
+                                # Q/A/S format: 3 lines with Q:, A:, and S: (source)
+                                source = doi if doi else f"PMID:{external_id}" if external_id else "Unknown"
+                                qas_text = f"Q: {item['question']}\nA: {item['answer']}\nS: {source}"
+                                qa_pairs.append({
+                                    'qas': qas_text
                                 })
                             else:
                                 # Legacy prompt/completion format
@@ -387,7 +404,7 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
                     logger.info(f"Processing document {i}/{len(documents)}: {doc['title'][:60]}...")
 
                     # Extract Q&A pairs for this document
-                    qa_pairs = self.extract_qa_pairs(doc['title'], doc['abstract'], output_format)
+                    qa_pairs = self.extract_qa_pairs(doc['title'], doc['abstract'], doc.get('doi', ''), doc.get('external_id', ''), output_format)
 
                     if qa_pairs:
                         # Write each Q&A pair to JSONL file
@@ -416,6 +433,62 @@ Ensure questions are specific and answers are concise but informative (2-3 sente
             logger.error(f"Error generating Q&A JSONL file: {e}")
             raise
 
+    def generate_qa_text(self, documents: List[Dict[str, str]], output_filename: Optional[str] = None) -> str:
+        """
+        Generate Q&A pairs in Q:/A:/S: format and save to text file.
+
+        Args:
+            documents (list): List of document dictionaries
+            output_filename (str, optional): Output text filename (default: auto-generated)
+
+        Returns:
+            str: Path to the generated text file
+        """
+        if not output_filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_filename = f"qa_pairs_qas_{timestamp}.txt"
+
+        total_qa_pairs = 0
+        processed_docs = 0
+
+        try:
+            with open(output_filename, 'w', encoding='utf-8') as f:
+                f.write(f"Q&A Pairs in Q:/A:/S: Format\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write("=" * 80 + "\n\n")
+
+                for i, doc in enumerate(documents, 1):
+                    logger.info(f"Processing document {i}/{len(documents)}: {doc['title'][:60]}...")
+
+                    # Extract Q&A pairs for this document
+                    qa_pairs = self.extract_qa_pairs(doc['title'], doc['abstract'], doc.get('doi', ''), doc.get('external_id', ''), "qas")
+
+                    if qa_pairs:
+                        # Write each Q&A pair to text file with extra spacing for visual separation
+                        for qa_pair in qa_pairs:
+                            f.write(qa_pair['qas'] + '\n\n\n')  # Three newlines total: one after S:, then two empty lines
+                            total_qa_pairs += 1
+
+                        processed_docs += 1
+                        logger.info(f"  Generated {len(qa_pairs)} Q&A pairs")
+                    else:
+                        logger.warning(f"  No Q&A pairs generated for document {i}")
+
+                    # Add a small delay to avoid overwhelming the API
+                    if i % 10 == 0:
+                        logger.info(f"Progress: {i}/{len(documents)} documents processed, {total_qa_pairs} Q&A pairs generated")
+
+            logger.info(f"Q&A generation complete!")
+            logger.info(f"  Processed documents: {processed_docs}/{len(documents)}")
+            logger.info(f"  Total Q&A pairs: {total_qa_pairs}")
+            logger.info(f"  Output file: {output_filename}")
+
+            return output_filename
+
+        except Exception as e:
+            logger.error(f"Error generating Q&A text file: {e}")
+            raise
+
 def main():
     """Main function to retrieve abstracts and generate Q&A pairs."""
     import argparse
@@ -429,8 +502,8 @@ def main():
     parser.add_argument('--abstracts-only', action='store_true', help='Only save abstracts, skip Q&A generation')
     parser.add_argument('--from-date', type=str, help='Start date for document retrieval (YYYY-MM-DD format, default: 2025-01-01)')
     parser.add_argument('--to-date', type=str, help='End date for document retrieval (YYYY-MM-DD format, default: today)')
-    parser.add_argument('--format', type=str, choices=['phi3', 'prompt_completion'], default='phi3',
-                       help='Output format: phi3 for MLX training or prompt_completion for legacy format (default: phi3)')
+    parser.add_argument('--format', type=str, choices=['phi3', 'prompt_completion', 'qas'], default='phi3',
+                       help='Output format: phi3 for MLX training, prompt_completion for legacy format, or qas for Q:/A:/S: 3-line format with DOI/PMID source (default: phi3)')
     
     args = parser.parse_args()
 
@@ -508,11 +581,19 @@ def main():
             logger.info(f"\nStarting Q&A generation for {len(documents)} documents...")
             logger.info(f"Using model: {args.model}")
 
-            jsonl_file = retriever.generate_qa_jsonl(documents, args.output_jsonl, args.format)
-            logger.info(f"\nQ&A pairs saved to: {jsonl_file}")
+            if args.format == "qas":
+                # Generate Q/A/S format as text file
+                output_file = retriever.generate_qa_text(documents, args.output_jsonl)
+            else:
+                # Generate JSONL format
+                output_file = retriever.generate_qa_jsonl(documents, args.output_jsonl, args.format)
+
+            logger.info(f"\nQ&A pairs saved to: {output_file}")
             logger.info(f"Format: {args.format}")
             if args.format == "phi3":
                 logger.info("Ready for phi3 MLX training!")
+            elif args.format == "qas":
+                logger.info("Ready for Q:/A:/S: format processing!")
             else:
                 logger.info("Ready for fine-tuning (legacy format)!")
         else:

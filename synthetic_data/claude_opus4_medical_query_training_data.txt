@@ -1,0 +1,740 @@
+Q: what is the cutoff in ultrasound measured ONSD for raised ICP
+A: (cutoff | threshold) & (ultrasound | sonography) & (ONSD | "optic nerve sheath diameter") & (raised | elevated | increased) & (ICP | "intracranial pressure" | "intra-cranial pressure")
+
+Q: effectiveness of ECMO in severe ARDS patients
+A: (effectiveness | efficacy | outcome) & (ECMO | "extracorporeal membrane oxygenation") & (severe | critical) & (ARDS | "acute respiratory distress syndrome") & (patients | cases)
+
+Q: diagnostic accuracy of D-dimer for pulmonary embolism
+A: (diagnostic | diagnosis) & (accuracy | sensitivity | specificity) & ("D-dimer" | "D dimer") & (pulmonary | lung) & (embolism | PE | embolus)
+
+Q: comparison of laparoscopic versus open appendectomy outcomes
+A: (comparison | versus | vs) & (laparoscopic | minimally invasive) & (open | traditional) & (appendectomy | "appendix removal") & (outcomes | results | complications)
+
+Q: incidence of stroke after cardiac catheterization
+A: (incidence | rate | frequency | risk) & (stroke | CVA | "cerebrovascular accident") & (after | following | post) & (cardiac | heart) & (catheterization | angiography | "cath lab")
+
+Q: treatment options for refractory status epilepticus
+A: (treatment | therapy | management) & (options | approaches) & (refractory | resistant | intractable) & ("status epilepticus" | "continuous seizure")
+
+Q: sensitivity of troponin I for early MI detection
+A: (sensitivity | accuracy) & ("troponin I" | "troponin-I" | TnI) & (early | acute) & (MI | "myocardial infarction" | "heart attack") & (detection | diagnosis)
+
+Q: prognosis of glioblastoma multiforme with temozolomide
+A: (prognosis | survival | outcome) & (glioblastoma | GBM | "glioblastoma multiforme") & (temozolomide | TMZ | Temodar)
+
+Q: risk factors for postoperative delirium in elderly
+A: (risk | predictive) & (factors | predictors) & (postoperative | "post-operative" | "after surgery") & (delirium | confusion | "altered mental status") & (elderly | geriatric | older)
+
+Q: optimal timing for tracheostomy in ventilated patients
+A: (optimal | best | appropriate) & (timing | "time frame" | when) & (tracheostomy | trach) & (ventilated | mechanical ventilation | intubated) & (patients | cases)
+
+Q: prevalence of MRSA in community acquired pneumonia
+A: (prevalence | incidence | rate) & (MRSA | "methicillin resistant staphylococcus aureus") & (community | CAP) & (acquired | onset) & (pneumonia | "lung infection")
+
+Q: efficacy of ketamine for treatment resistant depression
+A: (efficacy | effectiveness | response) & (ketamine | esketamine) & (treatment | therapy) & (resistant | refractory) & (depression | MDD | "major depressive disorder")
+
+Q: complications of TAVR versus surgical aortic valve replacement
+A: (complications | adverse events | outcomes) & (TAVR | "transcatheter aortic valve replacement" | TAVI) & (versus | vs | compared) & (surgical | open) & (aortic valve) & (replacement | AVR)
+
+Q: diagnostic yield of capsule endoscopy for obscure GI bleeding
+A: (diagnostic | detection) & (yield | rate | accuracy) & (capsule | wireless) & (endoscopy | "pill camera") & (obscure | occult | hidden) & (GI | gastrointestinal) & (bleeding | hemorrhage)
+
+Q: long term outcomes of bariatric surgery in diabetics
+A: ("long term" | "long-term" | prolonged) & (outcomes | results | effects) & (bariatric | weight loss | metabolic) & (surgery | procedure) & (diabetics | diabetes | T2DM | "type 2 diabetes")
+
+Q: accuracy of CT angiography for coronary artery disease
+A: (accuracy | sensitivity | specificity) & (CT | computed tomography) & (angiography | CTA) & (coronary | heart) & (artery | arterial) & (disease | CAD | stenosis)
+
+Q: benefits of prone positioning in ARDS
+A: (benefits | efficacy | outcomes) & (prone | proning) & (positioning | position) & (ARDS | "acute respiratory distress syndrome")
+
+Q: mortality rate of septic shock with early goal directed therapy
+A: (mortality | death | survival) & (rate | outcome) & (septic | sepsis) & (shock | hypotension) & (early | EGDT) & ("goal directed therapy" | "goal-directed therapy")
+
+Q: comparison of DOACs versus warfarin for atrial fibrillation
+A: (comparison | versus | vs) & (DOACs | "direct oral anticoagulants" | NOAC) & (warfarin | Coumadin) & (atrial fibrillation | AF | afib)
+
+Q: effectiveness of hypothermia after cardiac arrest
+A: (effectiveness | efficacy | benefit) & (hypothermia | cooling | "temperature management") & (after | post | following) & (cardiac | heart) & (arrest | "cardiopulmonary arrest")
+
+Q: diagnostic criteria for HIT type 2
+A: (diagnostic | diagnosis) & (criteria | score | algorithm) & (HIT | "heparin induced thrombocytopenia") & ("type 2" | "type II")
+
+Q: survival rates for stage 3 pancreatic cancer
+A: (survival | prognosis | mortality) & (rates | outcomes) & ("stage 3" | "stage III" | advanced) & (pancreatic | pancreas) & (cancer | adenocarcinoma | tumor)
+
+Q: indications for IVIG in Kawasaki disease
+A: (indications | criteria | guidelines) & (IVIG | "intravenous immunoglobulin") & (Kawasaki | "mucocutaneous lymph node syndrome") & (disease | syndrome)
+
+Q: sensitivity of MRI for meniscal tears
+A: (sensitivity | accuracy | diagnostic) & (MRI | "magnetic resonance imaging") & (meniscal | meniscus) & (tears | injury | damage)
+
+Q: risk of bleeding with dual antiplatelet therapy
+A: (risk | incidence | rate) & (bleeding | hemorrhage | bleed) & (dual | DAPT) & (antiplatelet | "anti-platelet") & (therapy | treatment)
+
+Q: outcomes of mechanical thrombectomy for acute stroke
+A: (outcomes | results | efficacy) & (mechanical | endovascular) & (thrombectomy | "clot retrieval") & (acute | ischemic) & (stroke | CVA)
+
+Q: prevalence of burnout among emergency physicians
+A: (prevalence | rate | incidence) & (burnout | "burn out" | exhaustion) & (among | in) & (emergency | ER | ED) & (physicians | doctors | clinicians)
+
+Q: comparison of epidural versus general anesthesia for hip surgery
+A: (comparison | versus | vs) & (epidural | regional | neuraxial) & (general | GA) & (anesthesia | anaesthesia) & (hip | "hip replacement") & (surgery | arthroplasty)
+
+Q: effectiveness of CPAP for obstructive sleep apnea
+A: (effectiveness | efficacy | compliance) & (CPAP | "continuous positive airway pressure") & (obstructive | OSA) & (sleep | nocturnal) & (apnea | apnoea)
+
+Q: diagnostic accuracy of procalcitonin for bacterial infection
+A: (diagnostic | diagnosis) & (accuracy | sensitivity | specificity) & (procalcitonin | PCT) & (bacterial | bacteria) & (infection | sepsis)
+
+Q: outcomes of VATS versus open lobectomy for lung cancer
+A: (outcomes | results | complications) & (VATS | "video assisted thoracoscopic surgery") & (versus | vs | compared) & (open | thoracotomy) & (lobectomy | "lung resection") & (lung | pulmonary) & (cancer | carcinoma)
+
+Q: efficacy of TPA for acute ischemic stroke
+A: (efficacy | effectiveness | benefit) & (TPA | "tissue plasminogen activator" | alteplase | thrombolysis) & (acute | early) & (ischemic | ischaemic) & (stroke | CVA)
+
+Q: complications of central line placement
+A: (complications | "adverse events" | risks) & (central | CVC | "central venous") & (line | catheter | access) & (placement | insertion)
+
+Q: survival benefit of adjuvant chemotherapy in colon cancer
+A: (survival | mortality | prognosis) & (benefit | advantage | improvement) & (adjuvant | postoperative) & (chemotherapy | chemo) & (colon | colorectal) & (cancer | carcinoma)
+
+Q: accuracy of rapid antigen test for COVID-19
+A: (accuracy | sensitivity | specificity) & (rapid | quick | POC) & (antigen | Ag) & (test | testing | detection) & ("COVID-19" | "SARS-CoV-2" | coronavirus)
+
+Q: incidence of DVT after knee replacement surgery
+A: (incidence | rate | risk) & (DVT | "deep vein thrombosis" | VTE) & (after | following | post) & (knee | TKA) & (replacement | arthroplasty) & (surgery | operation)
+
+Q: effectiveness of steroids in COPD exacerbation
+A: (effectiveness | efficacy | benefit) & (steroids | corticosteroids | prednisone) & (COPD | "chronic obstructive pulmonary disease") & (exacerbation | "acute exacerbation" | flare)
+
+Q: diagnostic value of BNP in heart failure
+A: (diagnostic | diagnosis) & (value | accuracy | utility) & (BNP | "brain natriuretic peptide" | "B-type natriuretic peptide") & (heart | cardiac | CHF) & (failure | dysfunction)
+
+Q: comparison of robotic versus laparoscopic prostatectomy
+A: (comparison | versus | vs) & (robotic | "robot assisted" | "da Vinci") & (laparoscopic | minimally invasive) & (prostatectomy | "prostate removal" | "prostate surgery")
+
+Q: mortality predictors in acute pancreatitis
+A: (mortality | death | survival) & (predictors | "risk factors" | indicators) & (acute | severe) & (pancreatitis | "pancreatic inflammation")
+
+Q: efficacy of biologics in rheumatoid arthritis
+A: (efficacy | effectiveness | response) & (biologics | "biological agents" | "TNF inhibitors") & (rheumatoid | RA) & (arthritis | "joint disease")
+
+Q: risk of intracranial hemorrhage with thrombolysis
+A: (risk | incidence | rate) & (intracranial | intracerebral | brain) & (hemorrhage | bleeding | ICH) & (thrombolysis | thrombolytic | TPA)
+
+Q: accuracy of ultrasound for appendicitis diagnosis
+A: (accuracy | sensitivity | specificity) & (ultrasound | US | sonography) & (appendicitis | "appendix inflammation") & (diagnosis | detection)
+
+Q: outcomes of early mobilization in ICU patients
+A: (outcomes | benefits | effects) & (early | immediate) & (mobilization | mobility | "physical therapy") & (ICU | "intensive care") & (patients | critically ill)
+
+Q: prevalence of diabetes in pregnancy
+A: (prevalence | incidence | rate) & (diabetes | GDM | "gestational diabetes") & (pregnancy | pregnant | gestation)
+
+Q: effectiveness of prophylactic antibiotics in C-section
+A: (effectiveness | efficacy | benefit) & (prophylactic | preventive) & (antibiotics | antimicrobial) & ("C-section" | cesarean | caesarean)
+
+Q: diagnostic accuracy of troponin T versus troponin I
+A: (diagnostic | diagnosis) & (accuracy | comparison | sensitivity) & ("troponin T" | TnT) & (versus | vs | compared) & ("troponin I" | TnI)
+
+Q: survival rates after liver transplantation for HCC
+A: (survival | prognosis | mortality) & (rates | outcomes) & (after | post) & (liver | hepatic) & (transplantation | transplant) & (HCC | "hepatocellular carcinoma")
+
+Q: complications of epidural anesthesia in labor
+A: (complications | "adverse effects" | risks) & (epidural | neuraxial) & (anesthesia | analgesia) & (labor | labour | delivery)
+
+Q: efficacy of immunotherapy in melanoma
+A: (efficacy | effectiveness | response) & (immunotherapy | "checkpoint inhibitors" | pembrolizumab) & (melanoma | "skin cancer")
+
+Q: diagnostic yield of bronchoscopy for lung nodules
+A: (diagnostic | diagnosis) & (yield | accuracy | sensitivity) & (bronchoscopy | "bronchoscopic biopsy") & (lung | pulmonary) & (nodules | masses | lesions)
+
+Q: risk factors for postpartum hemorrhage
+A: (risk | predictive) & (factors | predictors | indicators) & (postpartum | "post partum" | "after delivery") & (hemorrhage | bleeding | PPH)
+
+Q: comparison of ACE inhibitors versus ARBs in hypertension
+A: (comparison | versus | vs) & (ACE | "angiotensin converting enzyme") & (inhibitors | ACEI) & (ARBs | "angiotensin receptor blockers") & (hypertension | "high blood pressure")
+
+Q: effectiveness of cognitive behavioral therapy for chronic pain
+A: (effectiveness | efficacy | outcomes) & (cognitive | CBT) & (behavioral | behavioural) & (therapy | treatment) & (chronic | persistent) & (pain | "pain management")
+
+Q: incidence of pneumothorax after central line placement
+A: (incidence | rate | frequency) & (pneumothorax | "collapsed lung" | PTX) & (after | following | complication) & (central | CVC) & (line | catheter) & (placement | insertion)
+
+Q: accuracy of PET scan for lymphoma staging
+A: (accuracy | sensitivity | specificity) & (PET | "positron emission tomography" | "PET-CT") & (scan | imaging) & (lymphoma | Hodgkin | "non-Hodgkin") & (staging | stage)
+
+Q: outcomes of targeted therapy in lung adenocarcinoma
+A: (outcomes | response | survival) & (targeted | molecular) & (therapy | treatment | inhibitors) & (lung | pulmonary) & (adenocarcinoma | NSCLC | "non-small cell")
+
+Q: mortality benefit of ECPR in cardiac arrest
+A: (mortality | survival | neurological) & (benefit | outcomes | efficacy) & (ECPR | "extracorporeal cardiopulmonary resuscitation") & (cardiac | heart) & (arrest | "cardiopulmonary arrest")
+
+Q: diagnostic criteria for metabolic syndrome
+A: (diagnostic | diagnosis) & (criteria | definition | guidelines) & (metabolic | insulin resistance) & (syndrome | MetS)
+
+Q: effectiveness of vertebroplasty for compression fractures
+A: (effectiveness | efficacy | "pain relief") & (vertebroplasty | kyphoplasty | "cement augmentation") & (compression | vertebral | spinal) & (fractures | "fracture treatment")
+
+Q: risk of stroke with atrial fibrillation
+A: (risk | incidence | probability) & (stroke | CVA | "cerebrovascular accident") & (atrial fibrillation | AF | afib)
+
+Q: comparison of insulin pumps versus MDI in type 1 diabetes
+A: (comparison | versus | vs) & (insulin | CSII) & (pumps | "pump therapy") & (MDI | "multiple daily injections") & ("type 1" | T1DM | "type I") & (diabetes | diabetic)
+
+Q: accuracy of mammography for breast cancer screening
+A: (accuracy | sensitivity | specificity) & (mammography | mammogram) & (breast | mammary) & (cancer | carcinoma) & (screening | detection)
+
+Q: outcomes of stem cell transplant in multiple myeloma
+A: (outcomes | survival | response) & ("stem cell" | HSCT | hematopoietic) & (transplant | transplantation) & (multiple myeloma | MM | plasma cell)
+
+Q: efficacy of antivirals for influenza treatment
+A: (efficacy | effectiveness | benefit) & (antivirals | oseltamivir | Tamiflu) & (influenza | flu | H1N1) & (treatment | therapy)
+
+Q: diagnostic accuracy of CSF analysis for meningitis
+A: (diagnostic | diagnosis) & (accuracy | sensitivity | specificity) & (CSF | "cerebrospinal fluid" | "lumbar puncture") & (analysis | examination) & (meningitis | "meningeal infection")
+
+Q: complications of percutaneous nephrolithotomy
+A: (complications | "adverse events" | morbidity) & (percutaneous | PCNL) & (nephrolithotomy | "kidney stone removal" | "stone surgery")
+
+Q: survival benefit of checkpoint inhibitors in NSCLC
+A: (survival | PFS | OS) & (benefit | efficacy | improvement) & (checkpoint | PD-1 | PD-L1) & (inhibitors | immunotherapy) & (NSCLC | "non-small cell lung cancer")
+
+Q: effectiveness of gabapentin for neuropathic pain
+A: (effectiveness | efficacy | "pain relief") & (gabapentin | Neurontin) & (neuropathic | nerve) & (pain | neuropathy)
+
+Q: risk factors for ventilator associated pneumonia
+A: (risk | predictive) & (factors | predictors) & (ventilator | VAP) & (associated | acquired) & (pneumonia | "lung infection")
+
+Q: diagnostic yield of EUS for pancreatic masses
+A: (diagnostic | diagnosis) & (yield | accuracy | sensitivity) & (EUS | "endoscopic ultrasound") & (pancreatic | pancreas) & (masses | tumors | lesions)
+
+Q: comparison of SGLT2 inhibitors versus metformin in diabetes
+A: (comparison | versus | vs) & (SGLT2 | "sodium glucose cotransporter 2") & (inhibitors | empagliflozin) & (metformin | Glucophage) & (diabetes | T2DM)
+
+Q: outcomes of TIPS procedure for variceal bleeding
+A: (outcomes | success | patency) & (TIPS | "transjugular intrahepatic portosystemic shunt") & (procedure | shunt) & (variceal | varices) & (bleeding | hemorrhage)
+
+Q: accuracy of cardiac MRI for myocarditis diagnosis
+A: (accuracy | sensitivity | specificity) & (cardiac | heart) & (MRI | CMR | "magnetic resonance") & (myocarditis | "myocardial inflammation") & (diagnosis | detection)
+
+Q: efficacy of botox for chronic migraine
+A: (efficacy | effectiveness | reduction) & (botox | "botulinum toxin" | onabotulinumtoxin) & (chronic | frequent) & (migraine | headache)
+
+Q: mortality predictors in COVID-19 patients
+A: (mortality | death | survival) & (predictors | "risk factors" | indicators) & ("COVID-19" | "SARS-CoV-2" | coronavirus) & (patients | cases)
+
+Q: diagnostic value of ferritin in hemochromatosis
+A: (diagnostic | diagnosis) & (value | accuracy | utility) & (ferritin | "iron studies") & (hemochromatosis | "iron overload")
+
+Q: comparison of ablation versus medical therapy for AFib
+A: (comparison | versus | vs) & (ablation | "catheter ablation" | PVI) & (medical | drug | pharmacological) & (therapy | treatment) & (AFib | "atrial fibrillation")
+
+Q: effectiveness of compression stockings for DVT prevention
+A: (effectiveness | efficacy | prevention) & (compression | TED | graduated) & (stockings | "compression therapy") & (DVT | "deep vein thrombosis") & (prevention | prophylaxis)
+
+Q: accuracy of stress echo for coronary disease
+A: (accuracy | sensitivity | specificity) & (stress | exercise | dobutamine) & (echo | echocardiography) & (coronary | CAD) & (disease | ischemia)
+
+Q: outcomes of neoadjuvant therapy in breast cancer
+A: (outcomes | response | pCR) & (neoadjuvant | preoperative) & (therapy | chemotherapy | treatment) & (breast | mammary) & (cancer | carcinoma)
+
+Q: risk of nephrotoxicity with contrast media
+A: (risk | incidence | rate) & (nephrotoxicity | "kidney injury" | CIN) & (contrast | "contrast media" | iodinated) & (media | dye | agent)
+
+Q: efficacy of PPI therapy for GERD
+A: (efficacy | effectiveness | symptom) & (PPI | "proton pump inhibitor" | omeprazole) & (therapy | treatment) & (GERD | "gastroesophageal reflux" | reflux)
+
+Q: diagnostic accuracy of colonoscopy for colorectal cancer
+A: (diagnostic | detection) & (accuracy | sensitivity | miss rate) & (colonoscopy | "colonoscopic screening") & (colorectal | colon) & (cancer | polyps | adenoma)
+
+Q: survival rates after Whipple procedure
+A: (survival | mortality | prognosis) & (rates | outcomes) & (after | following) & (Whipple | pancreaticoduodenectomy | PD) & (procedure | surgery)
+
+Q: effectiveness of therapeutic hypothermia in neonatal HIE
+A: (effectiveness | efficacy | outcomes) & (therapeutic | induced) & (hypothermia | cooling) & (neonatal | newborn) & (HIE | "hypoxic ischemic encephalopathy")
+
+Q: comparison of warfarin versus aspirin for stroke prevention
+A: (comparison | versus | vs) & (warfarin | Coumadin) & (aspirin | ASA) & (stroke | CVA) & (prevention | prophylaxis)
+
+Q: diagnostic yield of liver biopsy for cirrhosis
+A: (diagnostic | diagnosis) & (yield | accuracy | value) & (liver | hepatic) & (biopsy | "histological examination") & (cirrhosis | fibrosis)
+
+Q: efficacy of monoclonal antibodies for COVID-19
+A: (efficacy | effectiveness | outcomes) & (monoclonal | mAb) & (antibodies | "antibody therapy") & ("COVID-19" | "SARS-CoV-2" | coronavirus)
+
+Q: complications of carotid endarterectomy
+A: (complications | "adverse events" | morbidity) & (carotid | CEA) & (endarterectomy | "carotid surgery")
+
+Q: accuracy of NT-proBNP for heart failure diagnosis
+A: (accuracy | sensitivity | specificity) & ("NT-proBNP" | "N-terminal pro-BNP") & (heart | cardiac | CHF) & (failure | dysfunction) & (diagnosis | detection)
+
+Q: outcomes of radiofrequency ablation for hepatocellular carcinoma
+A: (outcomes | survival | recurrence) & (radiofrequency | RFA | RF) & (ablation | "thermal ablation") & (hepatocellular | HCC | liver) & (carcinoma | cancer)
+
+Q: effectiveness of NIV for COPD exacerbation
+A: (effectiveness | efficacy | failure) & (NIV | "non-invasive ventilation" | BiPAP) & (COPD | "chronic obstructive pulmonary disease") & (exacerbation | "respiratory failure")
+
+Q: risk factors for anastomotic leak after colorectal surgery
+A: (risk | predictive) & (factors | predictors) & (anastomotic | anastomosis) & (leak | leakage | dehiscence) & (colorectal | colon | rectal) & (surgery | resection)
+
+Q: diagnostic accuracy of MR cholangiopancreatography
+A: (diagnostic | diagnosis) & (accuracy | sensitivity | specificity) & (MR | MRCP | magnetic) & (cholangiopancreatography | "biliary imaging") 
+
+Q: survival benefit of immunotherapy in renal cell carcinoma
+A: (survival | PFS | OS) & (benefit | efficacy | response) & (immunotherapy | nivolumab | "checkpoint inhibitors") & (renal | kidney | RCC) & (cell | clear) & (carcinoma | cancer)
+
+Q: effectiveness of spinal cord stimulation for chronic pain
+A: (effectiveness | efficacy | "pain reduction") & (spinal | SCS) & (cord | neuromodulation) & (stimulation | stimulator) & (chronic | refractory) & (pain | "pain syndrome")
+
+Q: accuracy of FDG-PET for infection diagnosis
+A: (accuracy | sensitivity | specificity) & (FDG | fluorodeoxyglucose) & (PET | "PET-CT" | "positron emission") & (infection | inflammation | osteomyelitis) & (diagnosis | detection)
+
+Q: outcomes of transcatheter mitral valve repair
+A: (outcomes | mortality | success) & (transcatheter | percutaneous | MitraClip) & (mitral | MV) & (valve | valvular) & (repair | intervention)
+
+Q: efficacy of lithium for bipolar disorder
+A: (efficacy | effectiveness | "mood stabilization") & (lithium | "lithium carbonate") & (bipolar | manic) & (disorder | depression | mania)
+
+Q: diagnostic criteria for acute kidney injury
+A: (diagnostic | diagnosis) & (criteria | definition | KDIGO) & (acute | AKI) & (kidney | renal) & (injury | failure | dysfunction)
+
+Q: comparison of open versus endovascular AAA repair
+A: (comparison | versus | vs) & (open | surgical) & (endovascular | EVAR | stent) & (AAA | "abdominal aortic aneurysm") & (repair | treatment)
+
+Q: effectiveness of palliative radiotherapy for bone metastases
+A: (effectiveness | efficacy | "pain relief") & (palliative | symptomatic) & (radiotherapy | radiation | RT) & (bone | skeletal | osseous) & (metastases | "metastatic disease")
+
+Q: risk of malignancy with immunosuppression
+A: (risk | incidence | rate) & (malignancy | cancer | neoplasm) & (immunosuppression | immunosuppressive | "transplant patients")
+
+Q: accuracy of cardiac CT for calcium scoring
+A: (accuracy | correlation | predictive) & (cardiac | coronary) & (CT | "computed tomography") & (calcium | CAC | Agatston) & (scoring | score)
+
+Q: outcomes of bariatric surgery in adolescents
+A: (outcomes | "weight loss" | complications) & (bariatric | "weight loss surgery" | "gastric bypass") & (surgery | procedure) & (adolescents | teenagers | pediatric)
+
+Q: efficacy of tDCS for depression treatment
+A: (efficacy | effectiveness | response) & (tDCS | "transcranial direct current stimulation") & (depression | depressive | MDD) & (treatment | therapy)
+
+Q: diagnostic yield of temporal artery biopsy for GCA
+A: (diagnostic | diagnosis) & (yield | sensitivity | accuracy) & (temporal | TA) & (artery | arterial) & (biopsy | histology) & (GCA | "giant cell arteritis")
+
+Q: comparison of biologics for psoriasis treatment
+A: (comparison | versus | efficacy) & (biologics | "biological agents" | "TNF inhibitors" | IL-17) & (psoriasis | psoriatic) & (treatment | therapy)
+
+Q: mortality predictors in cardiogenic shock
+A: (mortality | survival | death) & (predictors | "risk factors" | score) & (cardiogenic | cardiac) & (shock | "low output")
+
+Q: effectiveness of HBOT for diabetic foot ulcers
+A: (effectiveness | efficacy | healing) & (HBOT | "hyperbaric oxygen" | HBO) & (diabetic | diabetes) & (foot | lower extremity) & (ulcers | wounds)
+
+Q: accuracy of calprotectin for IBD diagnosis
+A: (accuracy | sensitivity | specificity) & (calprotectin | "fecal calprotectin") & (IBD | "inflammatory bowel disease" | Crohn | colitis) & (diagnosis | differentiation)
+
+Q: outcomes of CRT in heart failure patients
+A: (outcomes | response | mortality) & (CRT | "cardiac resynchronization therapy") & (heart | cardiac | CHF) & (failure | dysfunction) & (patients | recipients)
+
+Q: risk of perforation during colonoscopy
+A: (risk | incidence | rate) & (perforation | "bowel perforation" | complication) & (during | associated) & (colonoscopy | "colonoscopic procedure")
+
+Q: efficacy of JAK inhibitors in rheumatoid arthritis
+A: (efficacy | effectiveness | response) & (JAK | "Janus kinase") & (inhibitors | tofacitinib | baricitinib) & (rheumatoid | RA) & (arthritis | "joint disease")
+
+Q: diagnostic accuracy of endomyocardial biopsy
+A: (diagnostic | diagnosis) & (accuracy | yield | sensitivity) & (endomyocardial | EMB | myocardial) & (biopsy | "tissue sampling")
+
+Q: survival after lung transplantation for IPF
+A: (survival | mortality | prognosis) & (after | post) & (lung | pulmonary) & (transplantation | transplant) & (IPF | "idiopathic pulmonary fibrosis")
+
+Q: effectiveness of antibiotics for acute bronchitis
+A: (effectiveness | efficacy | benefit) & (antibiotics | antimicrobial | azithromycin) & (acute | uncomplicated) & (bronchitis | "bronchial infection")
+
+Q: comparison of DES versus BMS in coronary intervention
+A: (comparison | versus | vs) & (DES | "drug eluting stent") & (BMS | "bare metal stent") & (coronary | PCI) & (intervention | angioplasty)
+
+Q: accuracy of serum tryptase in anaphylaxis
+A: (accuracy | sensitivity | specificity) & (serum | blood) & (tryptase | "mast cell tryptase") & (anaphylaxis | "anaphylactic reaction")
+
+Q: outcomes of stereotactic radiosurgery for brain metastases
+A: (outcomes | survival | "local control") & (stereotactic | SRS | Gamma Knife) & (radiosurgery | radiation) & (brain | cerebral) & (metastases | "metastatic disease")
+
+Q: efficacy of probiotics for C diff prevention
+A: (efficacy | effectiveness | prevention) & (probiotics | Lactobacillus | Saccharomyces) & ("C diff" | "Clostridium difficile" | CDI) & (prevention | prophylaxis)
+
+Q: diagnostic yield of video EEG monitoring
+A: (diagnostic | diagnosis) & (yield | accuracy | utility) & (video | continuous) & (EEG | electroencephalography) & (monitoring | recording)
+
+Q: risk factors for surgical site infection
+A: (risk | predictive) & (factors | predictors) & (surgical | operative | SSI) & (site | wound) & (infection | "wound infection")
+
+Q: comparison of telemedicine versus in-person visits
+A: (comparison | versus | vs) & (telemedicine | telehealth | virtual) & ("in-person" | traditional | "face-to-face") & (visits | consultations | care)
+
+Q: effectiveness of acupuncture for chronic low back pain
+A: (effectiveness | efficacy | benefit) & (acupuncture | "needle therapy" | "dry needling") & (chronic | persistent) & (low back | lumbar | LBP) & (pain | "pain management")
+
+Q: accuracy of lung ultrasound for pneumonia diagnosis
+A: (accuracy | sensitivity | specificity) & (lung | pulmonary | thoracic) & (ultrasound | US | sonography) & (pneumonia | consolidation) & (diagnosis | detection)
+
+Q: outcomes of Y90 radioembolization for liver tumors
+A: (outcomes | survival | response) & (Y90 | yttrium-90 | SIRT) & (radioembolization | "selective internal radiation") & (liver | hepatic) & (tumors | HCC | metastases)
+
+Q: efficacy of melatonin for sleep disorders
+A: (efficacy | effectiveness | improvement) & (melatonin | "melatonin receptor agonist") & (sleep | insomnia | circadian) & (disorders | disturbance)
+
+Q: mortality benefit of therapeutic plasma exchange
+A: (mortality | survival | outcomes) & (benefit | efficacy) & (therapeutic | TPE) & (plasma | plasmapheresis) & (exchange | apheresis)
+
+Q: diagnostic criteria for PCOS
+A: (diagnostic | diagnosis) & (criteria | Rotterdam | guidelines) & (PCOS | "polycystic ovary syndrome" | "polycystic ovarian syndrome")
+
+Q: comparison of minimally invasive versus sternotomy for valve surgery
+A: (comparison | versus | vs) & (minimally invasive | "mini-thoracotomy" | MICS) & (sternotomy | "median sternotomy" | conventional) & (valve | valvular) & (surgery | replacement)
+
+Q: effectiveness of EMDR for PTSD treatment
+A: (effectiveness | efficacy | outcomes) & (EMDR | "eye movement desensitization") & (PTSD | "post-traumatic stress disorder" | trauma) & (treatment | therapy)
+
+Q: accuracy of optical coherence tomography in coronary imaging
+A: (accuracy | resolution | assessment) & (optical | OCT) & (coherence | intravascular) & (tomography | imaging) & (coronary | intracoronary)
+
+Q: outcomes of immunotherapy for bladder cancer
+A: (outcomes | survival | response) & (immunotherapy | pembrolizumab | "checkpoint inhibitors") & (bladder | urothelial) & (cancer | carcinoma)
+
+Q: risk of osteonecrosis with bisphosphonate therapy
+A: (risk | incidence | rate) & (osteonecrosis | ONJ | BRONJ) & (bisphosphonate | alendronate | zoledronic) & (therapy | treatment)
+
+Q: diagnostic value of anti-CCP antibodies in rheumatoid arthritis
+A: (diagnostic | diagnosis) & (value | sensitivity | specificity) & ("anti-CCP" | "anti-cyclic citrullinated peptide") & (antibodies | autoantibodies) & (rheumatoid | RA) & (arthritis)
+
+Q: efficacy of vagus nerve stimulation for epilepsy
+A: (efficacy | effectiveness | "seizure reduction") & (vagus | VNS) & (nerve | vagal) & (stimulation | stimulator) & (epilepsy | seizures | "seizure disorder")
+
+Q: comparison of mechanical versus bioprosthetic valves
+A: (comparison | versus | vs) & (mechanical | metallic) & (bioprosthetic | tissue | biological) & (valves | "valve replacement" | prosthesis)
+
+Q: accuracy of dermoscopy for melanoma detection
+A: (accuracy | sensitivity | specificity) & (dermoscopy | dermatoscopy | epiluminescence) & (melanoma | "malignant melanoma") & (detection | diagnosis | screening)
+
+Q: outcomes of deep brain stimulation for Parkinson disease
+A: (outcomes | improvement | efficacy) & (deep | DBS) & (brain | cerebral) & (stimulation | neurostimulation) & (Parkinson | PD | parkinsonian) & (disease | symptoms)
+
+Q: effectiveness of varenicline for smoking cessation
+A: (effectiveness | efficacy | "quit rates") & (varenicline | Chantix | Champix) & (smoking | tobacco | nicotine) & (cessation | quitting)
+
+Q: diagnostic yield of muscle biopsy for myopathy
+A: (diagnostic | diagnosis) & (yield | accuracy | utility) & (muscle | muscular) & (biopsy | histopathology) & (myopathy | "muscle disease" | myositis)
+
+Q: risk factors for contrast induced nephropathy
+A: (risk | predictive) & (factors | predictors | score) & (contrast | CIN) & (induced | associated) & (nephropathy | "kidney injury" | AKI)
+
+Q: survival benefit of adjuvant radiation in glioblastoma
+A: (survival | OS | PFS) & (benefit | improvement | efficacy) & (adjuvant | postoperative) & (radiation | radiotherapy | RT) & (glioblastoma | GBM | "high-grade glioma")
+
+Q: accuracy of virtual colonoscopy for polyp detection
+A: (accuracy | sensitivity | specificity) & (virtual | CT | CTC) & (colonoscopy | colonography) & (polyp | adenoma) & (detection | screening)
+
+Q: effectiveness of beta blockers post MI
+A: (effectiveness | benefit | mortality) & (beta | β) & (blockers | "beta-blockers" | metoprolol) & (post | after | following) & (MI | "myocardial infarction")
+
+Q: outcomes of POEM procedure for achalasia
+A: (outcomes | success | efficacy) & (POEM | "peroral endoscopic myotomy") & (procedure | myotomy) & (achalasia | "esophageal motility disorder")
+
+Q: diagnostic criteria for lupus nephritis
+A: (diagnostic | diagnosis) & (criteria | classification | biopsy) & (lupus | SLE | "systemic lupus erythematosus") & (nephritis | "kidney involvement")
+
+Q: efficacy of TNF inhibitors for ankylosing spondylitis
+A: (efficacy | effectiveness | response) & (TNF | "tumor necrosis factor") & (inhibitors | adalimumab | infliximab) & (ankylosing | AS) & (spondylitis | "spinal arthritis")
+
+Q: comparison of FOLFIRINOX versus gemcitabine in pancreatic cancer
+A: (comparison | versus | vs) & (FOLFIRINOX | "modified FOLFIRINOX") & (gemcitabine | Gemzar) & (pancreatic | pancreas) & (cancer | adenocarcinoma)
+
+Q: accuracy of elastography for liver fibrosis
+A: (accuracy | sensitivity | specificity) & (elastography | Fibroscan | "transient elastography") & (liver | hepatic) & (fibrosis | cirrhosis | stiffness)
+
+Q: outcomes of extracorporeal shock wave therapy for kidney stones
+A: (outcomes | "stone-free rate" | success) & (extracorporeal | ESWL) & (shock wave | lithotripsy) & (therapy | treatment) & (kidney | renal | ureteral) & (stones | calculi)
+
+Q: effectiveness of CBT for insomnia
+A: (effectiveness | efficacy | improvement) & (CBT | "cognitive behavioral therapy") & (insomnia | "sleep disorder" | CBT-I)
+
+Q: risk of tuberculosis with TNF inhibitor therapy
+A: (risk | incidence | reactivation) & (tuberculosis | TB | "latent TB") & (TNF | "tumor necrosis factor") & (inhibitor | "anti-TNF") & (therapy | treatment)
+
+Q: diagnostic accuracy of cardiac catheterization
+A: (diagnostic | diagnosis) & (accuracy | sensitivity | "gold standard") & (cardiac | coronary) & (catheterization | angiography | "cath lab")
+
+Q: survival after LVAD implantation
+A: (survival | mortality | outcomes) & (after | post) & (LVAD | "left ventricular assist device") & (implantation | placement | "mechanical support")
+
+Q: efficacy of phototherapy for psoriasis
+A: (efficacy | effectiveness | clearance) & (phototherapy | UV | PUVA) & (psoriasis | psoriatic) & (treatment | therapy)
+
+Q: comparison of insulin glargine versus NPH insulin
+A: (comparison | versus | vs) & (insulin glargine | Lantus | "long-acting") & (NPH | "neutral protamine Hagedorn") & (insulin | glycemic control)
+
+Q: accuracy of stress MRI for myocardial ischemia
+A: (accuracy | sensitivity | specificity) & (stress | adenosine | dobutamine) & (MRI | CMR | "magnetic resonance") & (myocardial | cardiac) & (ischemia | perfusion)
+
+Q: outcomes of radioiodine therapy for thyroid cancer
+A: (outcomes | recurrence | survival) & (radioiodine | I-131 | RAI) & (therapy | ablation | treatment) & (thyroid | differentiated) & (cancer | carcinoma)
+
+Q: effectiveness of mindfulness for anxiety disorders
+A: (effectiveness | efficacy | reduction) & (mindfulness | MBSR | "mindfulness-based") & (anxiety | GAD | "anxiety disorders") & (disorders | symptoms)
+
+Q: diagnostic yield of pleural fluid analysis
+A: (diagnostic | diagnosis) & (yield | accuracy | sensitivity) & (pleural | thoracentesis) & (fluid | effusion) & (analysis | cytology)
+
+Q: risk factors for perioperative myocardial infarction
+A: (risk | predictive) & (factors | predictors | RCRI) & (perioperative | "peri-operative" | surgical) & (myocardial | MI | cardiac) & (infarction | "heart attack")
+
+Q: comparison of laparoscopic versus open colectomy
+A: (comparison | versus | vs) & (laparoscopic | "minimally invasive") & (open | traditional) & (colectomy | "colon resection" | "bowel surgery")
+
+Q: efficacy of rituximab for pemphigus
+A: (efficacy | effectiveness | remission) & (rituximab | "anti-CD20") & (pemphigus | "pemphigus vulgaris" | autoimmune) 
+
+Q: accuracy of cardiac enzymes for MI diagnosis
+A: (accuracy | sensitivity | specificity) & (cardiac | heart) & (enzymes | biomarkers | troponin) & (MI | "myocardial infarction") & (diagnosis | detection)
+
+Q: outcomes of cochlear implantation in adults
+A: (outcomes | "hearing improvement" | "speech recognition") & (cochlear | CI) & (implantation | implant) & (adults | "adult patients")
+
+Q: effectiveness of methotrexate for ectopic pregnancy
+A: (effectiveness | success | efficacy) & (methotrexate | MTX | medical) & (ectopic | tubal) & (pregnancy | gestation) & (treatment | management)
+
+Q: diagnostic criteria for fibromyalgia
+A: (diagnostic | diagnosis) & (criteria | ACR | classification) & (fibromyalgia | "fibromyalgia syndrome" | "widespread pain")
+
+Q: survival benefit of bevacizumab in ovarian cancer
+A: (survival | PFS | OS) & (benefit | efficacy | improvement) & (bevacizumab | Avastin | "anti-VEGF") & (ovarian | epithelial) & (cancer | carcinoma)
+
+Q: accuracy of ankle-brachial index for PAD
+A: (accuracy | sensitivity | specificity) & ("ankle-brachial" | ABI | "ankle brachial") & (index | ratio) & (PAD | "peripheral artery disease")
+
+Q: outcomes of endoscopic mucosal resection for early gastric cancer
+A: (outcomes | recurrence | "complete resection") & (endoscopic | EMR) & (mucosal | submucosal) & (resection | removal) & (early | superficial) & (gastric | stomach) & (cancer | carcinoma)
+
+Q: efficacy of duloxetine for diabetic neuropathy
+A: (efficacy | effectiveness | "pain reduction") & (duloxetine | Cymbalta | SNRI) & (diabetic | DPN) & (neuropathy | "neuropathic pain")
+
+Q: risk of venous thromboembolism with oral contraceptives
+A: (risk | incidence | rate) & (venous | VTE | DVT) & (thromboembolism | thrombosis | "blood clot") & (oral | OCP | birth) & (contraceptives | "birth control")
+
+Q: diagnostic value of CA 19-9 in pancreatic cancer
+A: (diagnostic | diagnosis) & (value | sensitivity | specificity) & ("CA 19-9" | "carbohydrate antigen") & (pancreatic | pancreas) & (cancer | adenocarcinoma)
+
+Q: comparison of CABG versus PCI for left main disease
+A: (comparison | versus | vs) & (CABG | "coronary artery bypass") & (PCI | "percutaneous coronary intervention") & (left main | LMCA) & (disease | stenosis)
+
+Q: effectiveness of transcutaneous electrical nerve stimulation for pain
+A: (effectiveness | efficacy | relief) & (transcutaneous | TENS) & (electrical | electrotherapy) & (nerve | neuromodulation) & (stimulation | therapy) & (pain | analgesia)
+
+Q: accuracy of quantiferon gold for tuberculosis screening
+A: (accuracy | sensitivity | specificity) & (quantiferon | "quantiferon gold" | IGRA) & (tuberculosis | TB | "latent TB") & (screening | detection)
+
+Q: outcomes of mitral valve repair versus replacement
+A: (outcomes | survival | durability) & (mitral | MV) & (valve | valvular) & (repair | annuloplasty) & (versus | vs) & (replacement | MVR)
+
+Q: efficacy of anti-VEGF therapy for macular degeneration
+A: (efficacy | effectiveness | "visual acuity") & ("anti-VEGF" | bevacizumab | ranibizumab) & (therapy | injections) & (macular | AMD | "age-related") & (degeneration | maculopathy)
+
+Q: diagnostic criteria for preeclampsia
+A: (diagnostic | diagnosis) & (criteria | definition | guidelines) & (preeclampsia | "pre-eclampsia" | "pregnancy hypertension")
+
+Q: survival after pancreas transplantation
+A: (survival | graft | patient) & (after | post) & (pancreas | pancreatic) & (transplantation | transplant) & (outcomes | function)
+
+Q: effectiveness of hydroxychloroquine for lupus
+A: (effectiveness | efficacy | "disease activity") & (hydroxychloroquine | Plaquenil | antimalarial) & (lupus | SLE | "systemic lupus erythematosus")
+
+Q: comparison of regional versus general anesthesia for cesarean
+A: (comparison | versus | vs) & (regional | spinal | epidural) & (general | GA) & (anesthesia | anaesthesia) & (cesarean | "C-section" | caesarean)
+
+Q: accuracy of HbA1c for diabetes diagnosis
+A: (accuracy | sensitivity | specificity) & (HbA1c | "hemoglobin A1c" | "glycated hemoglobin") & (diabetes | T2DM) & (diagnosis | screening)
+
+Q: outcomes of percutaneous coronary intervention in elderly
+A: (outcomes | mortality | complications) & (percutaneous | PCI) & (coronary | cardiac) & (intervention | angioplasty) & (elderly | octogenarian | geriatric)
+
+Q: efficacy of interferon therapy for multiple sclerosis
+A: (efficacy | effectiveness | relapse) & (interferon | "interferon beta" | IFN) & (therapy | treatment) & (multiple sclerosis | MS | "relapsing-remitting")
+
+Q: diagnostic yield of endoscopic retrograde cholangiopancreatography
+A: (diagnostic | diagnosis) & (yield | accuracy | success) & (endoscopic | ERCP) & (retrograde | biliary) & (cholangiopancreatography | "biliary imaging")
+
+Q: risk factors for medication errors in hospitals
+A: (risk | contributing) & (factors | causes | predictors) & (medication | drug | prescribing) & (errors | mistakes | "adverse events") & (hospitals | inpatient)
+
+Q: comparison of arthroscopic versus open rotator cuff repair
+A: (comparison | versus | vs) & (arthroscopic | "minimally invasive") & (open | traditional) & (rotator cuff | shoulder) & (repair | surgery)
+
+Q: effectiveness of alcohol septal ablation for HOCM
+A: (effectiveness | efficacy | gradient) & (alcohol | ethanol) & (septal | septum) & (ablation | reduction) & (HOCM | "hypertrophic obstructive cardiomyopathy")
+
+Q: accuracy of fine needle aspiration for thyroid nodules
+A: (accuracy | sensitivity | specificity) & (fine needle | FNA | FNAB) & (aspiration | biopsy | cytology) & (thyroid | thyroidal) & (nodules | "thyroid nodule")
+
+Q: outcomes of transcatheter tricuspid valve intervention
+A: (outcomes | mortality | improvement) & (transcatheter | percutaneous | TTVI) & (tricuspid | TV) & (valve | regurgitation) & (intervention | repair)
+
+Q: efficacy of memantine for Alzheimer disease
+A: (efficacy | effectiveness | cognitive) & (memantine | Namenda | "NMDA antagonist") & (Alzheimer | AD | dementia) & (disease | "cognitive decline")
+
+Q: diagnostic criteria for primary biliary cholangitis
+A: (diagnostic | diagnosis) & (criteria | guidelines | AMA) & (primary | PBC) & (biliary | bile) & (cholangitis | cirrhosis)
+
+Q: survival benefit of radiation therapy for brain metastases
+A: (survival | OS | "local control") & (benefit | efficacy) & (radiation | radiotherapy | WBRT) & (therapy | treatment) & (brain | cerebral) & (metastases | "brain mets")
+
+Q: comparison of insulin degludec versus insulin glargine
+A: (comparison | versus | vs) & (insulin degludec | Tresiba) & (insulin glargine | Lantus) & (hypoglycemia | "glycemic control")
+
+Q: accuracy of PET-CT for esophageal cancer staging
+A: (accuracy | sensitivity | specificity) & ("PET-CT" | "PET/CT" | FDG) & (esophageal | esophagus) & (cancer | carcinoma) & (staging | "lymph node")
+
+Q: outcomes of autologous stem cell transplant for lymphoma
+A: (outcomes | survival | relapse) & (autologous | ASCT | auto) & ("stem cell" | hematopoietic) & (transplant | transplantation) & (lymphoma | Hodgkin | "non-Hodgkin")
+
+Q: effectiveness of compression therapy for venous ulcers
+A: (effectiveness | healing | efficacy) & (compression | bandaging | stockings) & (therapy | treatment) & (venous | "venous insufficiency") & (ulcers | "leg ulcers")
+
+Q: diagnostic yield of synovial fluid analysis
+A: (diagnostic | diagnosis) & (yield | accuracy | sensitivity) & (synovial | joint) & (fluid | aspiration) & (analysis | arthrocentesis)
+
+Q: risk of radiation pneumonitis after thoracic radiotherapy
+A: (risk | incidence | predictors) & (radiation | radiotherapy) & (pneumonitis | "lung toxicity") & (thoracic | chest | lung) & (radiotherapy | RT)
+
+Q: efficacy of dabigatran versus warfarin for stroke prevention
+A: (efficacy | effectiveness | superiority) & (dabigatran | Pradaxa | DOAC) & (versus | vs | compared) & (warfarin | Coumadin) & (stroke | thromboembolism) & (prevention | prophylaxis)
+
+Q: accuracy of transesophageal echo for endocarditis
+A: (accuracy | sensitivity | specificity) & (transesophageal | TEE | TOE) & (echo | echocardiography) & (endocarditis | "infective endocarditis" | vegetation)
+
+Q: outcomes of chimeric antigen receptor T-cell therapy
+A: (outcomes | response | survival) & (chimeric | CAR | "CAR-T") & (antigen receptor) & ("T-cell" | "T cell") & (therapy | treatment)
+
+Q: effectiveness of pulmonary rehabilitation for COPD
+A: (effectiveness | benefit | improvement) & (pulmonary | respiratory) & (rehabilitation | rehab | exercise) & (COPD | "chronic obstructive pulmonary disease")
+
+Q: diagnostic criteria for amyloidosis
+A: (diagnostic | diagnosis) & (criteria | guidelines | biopsy) & (amyloidosis | amyloid | "light chain")
+
+Q: comparison of everolimus eluting versus sirolimus eluting stents
+A: (comparison | versus | vs) & (everolimus | EES | Xience) & (eluting | coated) & (sirolimus | SES | Cypher) & (stents | "drug-eluting")
+
+Q: accuracy of MR enterography for Crohn disease
+A: (accuracy | sensitivity | specificity) & (MR | MRE | magnetic) & (enterography | "small bowel") & (Crohn | CD | "Crohn's") & (disease | inflammation)
+
+Q: outcomes of surgical maze procedure for atrial fibrillation
+A: (outcomes | success | freedom) & (surgical | Cox) & (maze | "maze procedure") & (atrial fibrillation | AF | afib)
+
+Q: efficacy of ustekinumab for inflammatory bowel disease
+A: (efficacy | effectiveness | remission) & (ustekinumab | Stelara | "IL-12/23") & (inflammatory | IBD) & (bowel | intestinal) & (disease | Crohn | colitis)
+
+Q: risk factors for delirium in ICU patients
+A: (risk | predictive) & (factors | predictors | CAM-ICU) & (delirium | confusion | encephalopathy) & (ICU | intensive | critical) & (patients | "critically ill")
+
+Q: diagnostic value of prothrombin time in liver disease
+A: (diagnostic | prognostic) & (value | utility | correlation) & (prothrombin | PT | INR) & (time | coagulation) & (liver | hepatic) & (disease | cirrhosis)
+
+Q: survival after esophagectomy for esophageal cancer
+A: (survival | mortality | prognosis) & (after | following) & (esophagectomy | "esophageal resection") & (esophageal | esophagus) & (cancer | carcinoma)
+
+Q: effectiveness of transcranial magnetic stimulation for depression
+A: (effectiveness | efficacy | response) & (transcranial | TMS | rTMS) & (magnetic | neuromodulation) & (stimulation | therapy) & (depression | MDD | "treatment-resistant")
+
+Q: comparison of bypass surgery versus angioplasty for peripheral artery disease
+A: (comparison | versus | vs) & (bypass | "surgical bypass" | revascularization) & (surgery | graft) & (angioplasty | PTA | endovascular) & (peripheral | PAD | "peripheral artery") & (disease | occlusion)
+
+Q: accuracy of genetic testing for BRCA mutations
+A: (accuracy | sensitivity | detection) & (genetic | DNA | genomic) & (testing | screening | sequencing) & (BRCA | BRCA1 | BRCA2) & (mutations | variants)
+
+Q: outcomes of fenestrated endovascular aneurysm repair
+A: (outcomes | survival | "endoleak rate") & (fenestrated | FEVAR | branched) & (endovascular | stent) & (aneurysm | AAA) & (repair | EVAR)
+
+Q: efficacy of secukinumab for psoriatic arthritis
+A: (efficacy | effectiveness | ACR20) & (secukinumab | Cosentyx | "IL-17 inhibitor") & (psoriatic | PsA) & (arthritis | "joint disease")
+
+Q: diagnostic criteria for antiphospholipid syndrome
+A: (diagnostic | diagnosis) & (criteria | classification | Sydney) & (antiphospholipid | APS | "Hughes syndrome") & (syndrome | antibodies)
+
+Q: risk of hemorrhage with dual antiplatelet therapy after stenting
+A: (risk | incidence | bleeding) & (hemorrhage | bleeding | "major bleeding") & (dual | DAPT) & (antiplatelet | "anti-platelet") & (therapy | treatment) & (after | post) & (stenting | PCI)
+
+Q: effectiveness of negative pressure wound therapy
+A: (effectiveness | efficacy | healing) & (negative pressure | NPWT | VAC) & (wound | "wound healing") & (therapy | dressing)
+
+Q: accuracy of liver stiffness measurement for cirrhosis
+A: (accuracy | sensitivity | specificity) & (liver | hepatic) & (stiffness | elasticity | LSM) & (measurement | elastography) & (cirrhosis | fibrosis)
+
+Q: outcomes of allogeneic stem cell transplant for AML
+A: (outcomes | survival | relapse) & (allogeneic | allo | donor) & ("stem cell" | HSCT | BMT) & (transplant | transplantation) & (AML | "acute myeloid leukemia")
+
+Q: efficacy of sacubitril valsartan for heart failure
+A: (efficacy | effectiveness | mortality) & (sacubitril | Entresto | ARNI) & (valsartan | "neprilysin inhibitor") & (heart | cardiac | HFrEF) & (failure | dysfunction)
+
+Q: comparison of open versus robotic radical prostatectomy
+A: (comparison | versus | vs) & (open | retropubic) & (robotic | "robot-assisted" | RARP) & (radical | complete) & (prostatectomy | "prostate removal")
+
+Q: diagnostic yield of capsule endoscopy versus enteroscopy
+A: (diagnostic | detection) & (yield | accuracy | comparison) & (capsule | wireless | "video capsule") & (endoscopy | "pill camera") & (versus | vs) & (enteroscopy | "balloon enteroscopy")
+
+Q: effectiveness of epidural blood patch for post dural puncture headache
+A: (effectiveness | success | relief) & (epidural | autologous) & (blood patch | EBP) & (post | PDPH) & (dural puncture | spinal) & (headache | "postdural")
+
+Q: accuracy of endobronchial ultrasound for mediastinal staging
+A: (accuracy | sensitivity | specificity) & (endobronchial | EBUS | "EBUS-TBNA") & (ultrasound | sonography) & (mediastinal | "lymph node") & (staging | biopsy)
+
+Q: outcomes of percutaneous left atrial appendage closure
+A: (outcomes | stroke | bleeding) & (percutaneous | transcatheter) & (left atrial | LAA) & (appendage | "atrial appendage") & (closure | occlusion | Watchman)
+
+Q: efficacy of biosimilar infliximab versus originator
+A: (efficacy | effectiveness | equivalence) & (biosimilar | CT-P13) & (infliximab | Remicade) & (versus | vs | compared) & (originator | reference)
+
+Q: diagnostic criteria for hemophagocytic lymphohistiocytosis
+A: (diagnostic | diagnosis) & (criteria | HLH-2004 | guidelines) & (hemophagocytic | HLH | MAS) & (lymphohistiocytosis | syndrome)
+
+Q: survival benefit of cytoreductive surgery for peritoneal carcinomatosis
+A: (survival | OS | PFS) & (benefit | outcomes) & (cytoreductive | CRS | debulking) & (surgery | HIPEC) & (peritoneal | peritoneum) & (carcinomatosis | metastases)
+
+Q: comparison of sitagliptin versus metformin for diabetes
+A: (comparison | versus | vs) & (sitagliptin | Januvia | "DPP-4") & (metformin | Glucophage) & (diabetes | T2DM | "glycemic control")
+
+Q: accuracy of MR spectroscopy for brain tumor diagnosis
+A: (accuracy | sensitivity | specificity) & (MR | MRS | magnetic) & (spectroscopy | "metabolite analysis") & (brain | cerebral) & (tumor | glioma | neoplasm) & (diagnosis | differentiation)
+
+Q: outcomes of extracorporeal CO2 removal in ARDS
+A: (outcomes | mortality | ventilation) & (extracorporeal | ECCO2R) & (CO2 | "carbon dioxide") & (removal | extraction) & (ARDS | "respiratory failure")
+
+Q: effectiveness of platelet rich plasma for tendinopathy
+A: (effectiveness | efficacy | healing) & (platelet | PRP) & (rich | enriched) & (plasma | injection) & (tendinopathy | tendonitis | "tendon injury")
+
+Q: diagnostic yield of bone marrow biopsy for fever of unknown origin
+A: (diagnostic | diagnosis) & (yield | utility | value) & (bone marrow | BM) & (biopsy | aspiration) & (fever | FUO) & ("unknown origin" | "undetermined origin")
+
+Q: risk factors for post-ERCP pancreatitis
+A: (risk | predictive) & (factors | predictors) & (post | after) & (ERCP | "endoscopic retrograde cholangiopancreatography") & (pancreatitis | "pancreatic inflammation")
+
+Q: efficacy of lenvatinib for hepatocellular carcinoma
+A: (efficacy | effectiveness | survival) & (lenvatinib | Lenvima | "multikinase inhibitor") & (hepatocellular | HCC | liver) & (carcinoma | cancer)
+
+Q: comparison of thoracoscopic versus open thymectomy
+A: (comparison | versus | vs) & (thoracoscopic | VATS | "minimally invasive") & (open | transsternal) & (thymectomy | "thymus removal") & (myasthenia | thymoma)
+
+Q: accuracy of serum free light chains in multiple myeloma
+A: (accuracy | sensitivity | prognostic) & (serum | blood) & (free | FLC | kappa) & (light chains | lambda) & (multiple myeloma | MM | "plasma cell")
+
+Q: outcomes of stereotactic body radiation for lung cancer
+A: (outcomes | "local control" | survival) & (stereotactic | SBRT | SABR) & (body | ablative) & (radiation | radiotherapy) & (lung | pulmonary) & (cancer | NSCLC)
+
+Q: effectiveness of dexmedetomidine for ICU sedation
+A: (effectiveness | efficacy | delirium) & (dexmedetomidine | Precedex | "alpha-2 agonist") & (ICU | intensive) & (sedation | "mechanical ventilation")
+
+Q: diagnostic criteria for eosinophilic esophagitis
+A: (diagnostic | diagnosis) & (criteria | guidelines | biopsy) & (eosinophilic | EoE | allergic) & (esophagitis | "esophageal inflammation")
+
+Q: survival after bilateral lung transplantation
+A: (survival | mortality | outcomes) & (after | post) & (bilateral | double) & (lung | pulmonary) & (transplantation | transplant)
